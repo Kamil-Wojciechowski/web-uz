@@ -1,13 +1,13 @@
-package com.uz.shop.olxd;
+package com.uz.shop.animal.world;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OlxdApplication {
+public class AnimalWorldApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OlxdApplication.class, args);
+		SpringApplication.run(AnimalWorldApplication.class, args);
 	}
 
 }
