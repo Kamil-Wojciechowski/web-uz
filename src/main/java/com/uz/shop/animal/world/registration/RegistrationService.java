@@ -1,8 +1,8 @@
 package com.uz.shop.animal.world.registration;
 
-import com.uz.shop.animal.world.appuser.User;
-import com.uz.shop.animal.world.appuser.UserService;
-import com.uz.shop.animal.world.appuser.UserType;
+import com.uz.shop.animal.world.user.User;
+import com.uz.shop.animal.world.user.UserService;
+import com.uz.shop.animal.world.user.UserType;
 import com.uz.shop.animal.world.email.EmailSender;
 import com.uz.shop.animal.world.registration.token.Token;
 import com.uz.shop.animal.world.registration.token.TokenService;

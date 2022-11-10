@@ -1,6 +1,6 @@
 package com.uz.shop.animal.world.security.config;
 
-import com.uz.shop.animal.world.appuser.UserService;
+import com.uz.shop.animal.world.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

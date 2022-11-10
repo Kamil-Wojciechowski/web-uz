@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.appuser;
+package com.uz.shop.animal.world.user;
 
 import com.uz.shop.animal.world.registration.token.Token;
 import com.uz.shop.animal.world.registration.token.TokenService;

@@ -1,6 +1,6 @@
 package com.uz.shop.animal.world.registration.token;
 
-import com.uz.shop.animal.world.appuser.User;
+import com.uz.shop.animal.world.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.appuser;
+package com.uz.shop.animal.world.user;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
