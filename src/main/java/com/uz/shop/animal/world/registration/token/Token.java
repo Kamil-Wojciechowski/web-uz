@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
@@ -30,6 +31,7 @@ public class Token {
     private TokenType tokenType;
 
     @Column(nullable = false)
+    @NotEmpty
     private String token;
 
     @CreationTimestamp

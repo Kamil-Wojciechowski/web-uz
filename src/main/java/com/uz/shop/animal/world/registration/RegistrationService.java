@@ -32,6 +32,7 @@ public class RegistrationService {
         if(!isValidEmail) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, WRONG_FORMAT_EMAIL);
         }
+
         String token = userService.signUpUser(new User(
                 request.getFirstname(),
                 request.getLastname(),

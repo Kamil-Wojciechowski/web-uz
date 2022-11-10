@@ -10,8 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -33,9 +35,9 @@ public class UserService implements UserDetailsService {
                         new UsernameNotFoundException(String.format(USER_NOT_FOUND, email)));
     }
 
-    public String signUpUser(User appUser) {
+    public String signUpUser(@Valid @RequestBody User user) {
         boolean userExists = userRepository
-                .findByEmail(appUser.getEmail())
+                .findByEmail(user.getEmail())
                 .isPresent();
 
         if(userExists) {
@@ -43,11 +45,11 @@ public class UserService implements UserDetailsService {
         }
 
         String encodedPassword = bCryptPasswordEncoder
-                .encode(appUser.getPassword());
+                .encode(user.getPassword());
 
-        appUser.setPassword(encodedPassword);
+        user.setPassword(encodedPassword);
 
-        User createdUser = userRepository.save(appUser);
+        User createdUser = userRepository.save(user);
 
         String registrationToken = UUID.randomUUID().toString();
         Token token = new Token(
