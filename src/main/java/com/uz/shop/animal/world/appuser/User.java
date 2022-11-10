@@ -20,7 +20,7 @@ import java.util.Collections;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-public class AppUser implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +30,15 @@ public class AppUser implements UserDetails {
     private String email;
     @Enumerated(EnumType.STRING)
     private UserType userType;
+    private Boolean enabled;
     private String password;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public AppUser(String firstname, String lastname, String email, UserType userType, String password) {
+
+    public User(String firstname, String lastname, String email, UserType userType, String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
@@ -77,6 +79,6 @@ public class AppUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 }

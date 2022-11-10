@@ -14,3 +14,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  mail:
+    host: smtp.mailtrap.io
+    port: 587
+    username: b3fdbd14304b7d
+    password: e2f7103234f93e
+
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth:
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
