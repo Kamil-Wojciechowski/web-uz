@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.user;
+package com.uz.shop.animal.world.security.user;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -49,6 +49,7 @@ public class User implements UserDetails {
     @NotEmpty
     @Size(min=8)
     private String password;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

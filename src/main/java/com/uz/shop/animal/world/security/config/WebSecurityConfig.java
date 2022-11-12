@@ -1,6 +1,6 @@
 package com.uz.shop.animal.world.security.config;
 
-import com.uz.shop.animal.world.user.UserService;
+import com.uz.shop.animal.world.security.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,11 +22,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/v*/register/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated().and()
-                .formLogin();
+                .antMatchers("/api/v*/register/**").permitAll().and()
+                .authorizeRequests()
+                .antMatchers("/api/v*/recovery/**").permitAll()
+                .and().httpBasic();
     }
 
     @Override

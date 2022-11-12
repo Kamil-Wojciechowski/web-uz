@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.registration;
+package com.uz.shop.animal.world.token.registration;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

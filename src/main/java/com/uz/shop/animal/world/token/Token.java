@@ -1,6 +1,6 @@
-package com.uz.shop.animal.world.registration.token;
+package com.uz.shop.animal.world.token;
 
-import com.uz.shop.animal.world.user.User;
+import com.uz.shop.animal.world.security.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +20,7 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     @JoinColumn(
             nullable = false,
             name = "user_id"
@@ -38,17 +38,6 @@ public class Token {
     private LocalDateTime createdAt;
 
     private LocalDateTime expiresAt;
-
-    @Column(nullable = true)
-    private LocalDateTime confirmedAt;
-
-    public Token(User user, TokenType tokenType, String token, LocalDateTime expiredAt, LocalDateTime confirmedAt) {
-        this.user = user;
-        this.tokenType = tokenType;
-        this.token = token;
-        this.expiresAt = expiredAt;
-        this.confirmedAt = confirmedAt;
-    }
 
     public Token(User user, TokenType tokenType, String token, LocalDateTime expiredAt) {
         this.user = user;

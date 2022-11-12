@@ -1,11 +1,13 @@
-package com.uz.shop.animal.world.registration;
+package com.uz.shop.animal.world.token.registration;
 
-import com.uz.shop.animal.world.user.User;
-import com.uz.shop.animal.world.user.UserService;
-import com.uz.shop.animal.world.user.UserType;
+import com.uz.shop.animal.world.security.user.User;
+import com.uz.shop.animal.world.security.user.UserService;
+import com.uz.shop.animal.world.security.user.UserType;
 import com.uz.shop.animal.world.email.EmailSender;
-import com.uz.shop.animal.world.registration.token.Token;
-import com.uz.shop.animal.world.registration.token.TokenService;
+import com.uz.shop.animal.world.token.Token;
+import com.uz.shop.animal.world.token.TokenService;
+import com.uz.shop.animal.world.validator.EmailValidator;
+import com.uz.shop.animal.world.validator.PasswordValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,17 +22,23 @@ public class RegistrationService {
     private static final String WRONG_FORMAT_EMAIL = "Email have wrong format!";
     public static final String TOKEN_NOT_FOUND = "Token not found!";
     public static final String EMAIL_ALREADY_CONFIRMED = "Email already confirmed";
+    public static final String PASSWORD_ARE_NOT_THE_SAME = "Password are not the same!";
     public static final String TOKEN_EXPIRED = "Token expired!";
     private final EmailValidator emailValidator;
     private final UserService userService;
     private final TokenService tokenService;
     private final EmailSender emailSender;
+    private final PasswordValidator passwordValidator;
 
     public String register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
 
         if(!isValidEmail) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, WRONG_FORMAT_EMAIL);
+        }
+
+        if(!passwordValidator.test(request.getPassword(), request.getConfirmedPassword())) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, PASSWORD_ARE_NOT_THE_SAME);
         }
 
         String token = userService.signUpUser(new User(
@@ -51,17 +59,15 @@ public class RegistrationService {
         Token tokenItem = tokenService.getToken(token)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_NOT_FOUND));
 
-        if(tokenItem.getConfirmedAt() != null) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, EMAIL_ALREADY_CONFIRMED);
-        }
-
         LocalDateTime expiredAt = tokenItem.getExpiresAt();
 
         if(expiredAt.isBefore(LocalDateTime.now())) {
+            tokenService.deleteToken(tokenItem);
+            userService.createNewRegisterToken(tokenItem.getUser());
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_EXPIRED);
         }
 
-        tokenService.setConfirmedAt(token);
+        tokenService.deleteToken(tokenItem);
         userService.enableUser(tokenItem.getUser().getEmail());
         return "Confirmed";
     }

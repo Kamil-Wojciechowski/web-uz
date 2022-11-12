@@ -1,8 +1,8 @@
-package com.uz.shop.animal.world.user;
+package com.uz.shop.animal.world.security.user;
 
-import com.uz.shop.animal.world.registration.token.Token;
-import com.uz.shop.animal.world.registration.token.TokenService;
-import com.uz.shop.animal.world.registration.token.TokenType;
+import com.uz.shop.animal.world.token.Token;
+import com.uz.shop.animal.world.token.TokenService;
+import com.uz.shop.animal.world.token.TokenType;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final static String USER_NOT_FOUND = "User with email %s not found!";
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final static Long expirationHours = Long.valueOf(12);
+    public final static Long expirationHours = Long.valueOf(12);
     private final TokenService tokenService;
 
     @Override
@@ -33,6 +33,11 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(String.format(USER_NOT_FOUND, email)));
+    }
+
+    public User getUserByEmail(String email) throws UsernameNotFoundException{
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException(String.format(USER_NOT_FOUND, email)));
     }
 
     public String signUpUser(@Valid @RequestBody User user) {
@@ -62,6 +67,38 @@ public class UserService implements UserDetailsService {
         tokenService.saveToken(token);
 
         return registrationToken;
+    }
+
+    public String recoveryUser(@Valid @RequestBody User user) {
+        String recoveryToken = UUID.randomUUID().toString();
+        Token token = new Token(
+                user,
+                TokenType.RECOVERY,
+                recoveryToken,
+                LocalDateTime.now().plusHours(expirationHours)
+        );
+
+        tokenService.saveToken(token);
+
+        return recoveryToken;
+    }
+
+    public String createNewRegisterToken(@Valid @RequestBody User user) {
+        String registrationToken = UUID.randomUUID().toString();
+        Token token = new Token(
+                user,
+                TokenType.REGISTER,
+                registrationToken,
+                LocalDateTime.now().plusHours(expirationHours)
+        );
+
+        tokenService.saveToken(token);
+
+        return registrationToken;
+    }
+
+    public int changePassword(String password, Long id) {
+        return userRepository.updatePassword(password, id);
     }
 
     public int enableUser(String email) {
