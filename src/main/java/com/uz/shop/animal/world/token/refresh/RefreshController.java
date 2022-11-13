@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uz.shop.animal.world.security.AuthorizationToken;
 import com.uz.shop.animal.world.security.user.User;
 import com.uz.shop.animal.world.security.user.UserService;
 import lombok.AllArgsConstructor;
@@ -33,13 +34,13 @@ public class RefreshController {
 
         if (refreshToken != null) {
             try {
-                Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
+                Algorithm algorithm = AuthorizationToken.getAlgorithm();
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
                 String email = decodedJWT.getSubject();
                 User user = userService.getUserByEmail(email);
 
-                String access_token = JWT.create()
+                String accessToken = JWT.create()
                         .withSubject(user.getUsername())
                         .withExpiresAt(new Date(System.currentTimeMillis() + 8 * 60 * 60 * 1000)) //8h
                         .withIssuer(request.getRequestURL().toString())
@@ -47,8 +48,9 @@ public class RefreshController {
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", access_token);
+                tokens.put("access_token", accessToken);
                 tokens.put("refresh_token", refreshToken);
+                response.setContentType("applcation/json");
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
             } catch (Exception e) {
                 response.setHeader("error", e.getMessage());

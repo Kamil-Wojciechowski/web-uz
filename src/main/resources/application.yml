@@ -1,4 +1,9 @@
 server:
+  jwt:
+    secret: "secret"
+    issuer: "AnimalWorld"
+    accessExpTime: "28800000"
+    refreshExpTime: "31104000000"
   error:
     include-message: always
     include-binding-errors: always

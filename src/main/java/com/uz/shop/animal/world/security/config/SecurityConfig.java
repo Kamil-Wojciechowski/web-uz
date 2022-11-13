@@ -35,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(final HttpSecurity http,
                                            final AuthenticationManagerBuilder auth,
                                            final AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager());
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), userService);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
 
         auth.authenticationProvider(authenticationProvider());
