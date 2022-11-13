@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.security.user;
+package com.uz.shop.animal.world.models;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

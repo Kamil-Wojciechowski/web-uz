@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.token.recovery;
+package com.uz.shop.animal.world.request;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

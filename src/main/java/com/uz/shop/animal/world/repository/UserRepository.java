@@ -1,6 +1,7 @@
-package com.uz.shop.animal.world.security.user;
+package com.uz.shop.animal.world.repository;
 
 
+import com.uz.shop.animal.world.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,6 +1,5 @@
-package com.uz.shop.animal.world.token;
+package com.uz.shop.animal.world.models;
 
-import com.uz.shop.animal.world.security.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,10 +1,10 @@
-package com.uz.shop.animal.world.security.config;
+package com.uz.shop.animal.world.security.config.filter;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uz.shop.animal.world.security.AuthorizationToken;
-import com.uz.shop.animal.world.security.user.User;
-import com.uz.shop.animal.world.security.user.UserService;
+import com.uz.shop.animal.world.services.AuthorizationService;
+import com.uz.shop.animal.world.models.User;
+import com.uz.shop.animal.world.services.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,7 +39,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userService.getUserByEmail(userDetails.getUsername());
-        Map<String, String> tokens = AuthorizationToken.createTokenPair(user);
+        Map<String, String> tokens = AuthorizationService.createTokenPair(user);
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }

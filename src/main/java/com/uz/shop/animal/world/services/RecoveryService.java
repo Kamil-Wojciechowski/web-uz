@@ -1,10 +1,9 @@
-package com.uz.shop.animal.world.token.recovery;
+package com.uz.shop.animal.world.services;
 
-import com.uz.shop.animal.world.email.EmailSender;
-import com.uz.shop.animal.world.security.user.User;
-import com.uz.shop.animal.world.security.user.UserService;
-import com.uz.shop.animal.world.token.Token;
-import com.uz.shop.animal.world.token.TokenService;
+import com.uz.shop.animal.world.request.RecoveryRequest;
+import com.uz.shop.animal.world.services.email.EmailSender;
+import com.uz.shop.animal.world.models.User;
+import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.validator.PasswordValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
-import static com.uz.shop.animal.world.token.registration.RegistrationService.*;
+import static com.uz.shop.animal.world.services.RegistrationService.*;
 
 @Service
 @AllArgsConstructor

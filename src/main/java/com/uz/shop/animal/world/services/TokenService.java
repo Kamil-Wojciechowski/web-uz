@@ -1,5 +1,7 @@
-package com.uz.shop.animal.world.token;
+package com.uz.shop.animal.world.services;
 
+import com.uz.shop.animal.world.models.Token;
+import com.uz.shop.animal.world.repository.TokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,7 @@
-package com.uz.shop.animal.world.token.recovery;
+package com.uz.shop.animal.world.controlers;
 
+import com.uz.shop.animal.world.request.RecoveryRequest;
+import com.uz.shop.animal.world.services.RecoveryService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

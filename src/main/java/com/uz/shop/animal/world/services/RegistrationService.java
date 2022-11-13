@@ -1,11 +1,10 @@
-package com.uz.shop.animal.world.token.registration;
+package com.uz.shop.animal.world.services;
 
-import com.uz.shop.animal.world.security.user.User;
-import com.uz.shop.animal.world.security.user.UserService;
-import com.uz.shop.animal.world.security.user.UserType;
-import com.uz.shop.animal.world.email.EmailSender;
-import com.uz.shop.animal.world.token.Token;
-import com.uz.shop.animal.world.token.TokenService;
+import com.uz.shop.animal.world.models.User;
+import com.uz.shop.animal.world.models.UserType;
+import com.uz.shop.animal.world.services.email.EmailSender;
+import com.uz.shop.animal.world.models.Token;
+import com.uz.shop.animal.world.request.RegistrationRequest;
 import com.uz.shop.animal.world.validator.EmailValidator;
 import com.uz.shop.animal.world.validator.PasswordValidator;
 import lombok.AllArgsConstructor;

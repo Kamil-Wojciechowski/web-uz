@@ -1,8 +1,9 @@
-package com.uz.shop.animal.world.security.user;
+package com.uz.shop.animal.world.services;
 
-import com.uz.shop.animal.world.token.Token;
-import com.uz.shop.animal.world.token.TokenService;
-import com.uz.shop.animal.world.token.TokenType;
+import com.uz.shop.animal.world.models.User;
+import com.uz.shop.animal.world.repository.UserRepository;
+import com.uz.shop.animal.world.models.Token;
+import com.uz.shop.animal.world.models.TokenType;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;

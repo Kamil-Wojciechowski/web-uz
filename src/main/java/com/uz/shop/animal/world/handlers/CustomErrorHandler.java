@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world;
+package com.uz.shop.animal.world.handlers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

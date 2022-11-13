@@ -1,16 +1,10 @@
-package com.uz.shop.animal.world.token.refresh;
+package com.uz.shop.animal.world.controlers;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uz.shop.animal.world.security.AuthorizationToken;
-import com.uz.shop.animal.world.security.user.User;
-import com.uz.shop.animal.world.security.user.UserService;
+import com.uz.shop.animal.world.services.AuthorizationService;
+import com.uz.shop.animal.world.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -34,25 +27,13 @@ public class RefreshController {
 
         if (refreshToken != null) {
             try {
-                Algorithm algorithm = AuthorizationToken.getAlgorithm();
-                JWTVerifier verifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = verifier.verify(refreshToken);
-                String email = decodedJWT.getSubject();
-                User user = userService.getUserByEmail(email);
 
-                String accessToken = JWT.create()
-                        .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + 8 * 60 * 60 * 1000)) //8h
-                        .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                        .sign(algorithm);
-
-                Map<String, String> tokens = new HashMap<>();
-                tokens.put("access_token", accessToken);
-                tokens.put("refresh_token", refreshToken);
+                Map<String, String> tokens = AuthorizationService.refreshToken(refreshToken, userService);
                 response.setContentType("applcation/json");
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+
             } catch (Exception e) {
+
                 response.setHeader("error", e.getMessage());
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();

@@ -1,5 +1,6 @@
-package com.uz.shop.animal.world.token;
+package com.uz.shop.animal.world.repository;
 
+import com.uz.shop.animal.world.models.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,5 +1,7 @@
-package com.uz.shop.animal.world.token.registration;
+package com.uz.shop.animal.world.controlers;
 
+import com.uz.shop.animal.world.request.RegistrationRequest;
+import com.uz.shop.animal.world.services.RegistrationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
