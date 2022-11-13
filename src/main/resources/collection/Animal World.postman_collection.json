@@ -1,0 +1,437 @@
+{
+	"info": {
+		"_postman_id": "7ece54f2-a36e-4d9c-92f2-c24cfa75549a",
+		"name": "Animal World",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16915391"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"abc\",\r\n    \"lastname\": \"cde\",\r\n    \"email\": \"dorix654@gmail.com\",\r\n    \"password\": \"KamilPwd123\",\r\n    \"confirmedPassword\": \"KamilPwd123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{basePath}}",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Checking 10 minute mail",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\": \"Kamil\",\r\n    \"lastname\": \"Wojciechowski\",\r\n    \"email\": \"jxw65546@xcoxc.com\",\r\n    \"password\": \"KamilPwd123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}{{basePath}}",
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Nov 2022 18:45:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"timestamp\": \"2022-11-10T18:45:53.365+00:00\",\n    \"status\": 500,\n    \"error\": \"Internal Server Error\",\n    \"message\": \"400 Email have wrong format!\",\n    \"path\": \"/api/v1/register\"\n}"
+						}
+					]
+				},
+				{
+					"name": "/register/:tokenId",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Kamil\",\r\n    \"lastname\": \"Wojciechowski\",\r\n    \"email\": \"test@test.pl\",\r\n    \"password\": \"KamilPwd123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/register/:tokenId",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{basePath}}",
+							"path": [
+								"register",
+								":tokenId"
+							],
+							"variable": [
+								{
+									"key": "tokenId",
+									"value": "53a49147-d08e-4234-8936-5755ba35c9c0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "dorix654@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "KamilPwd123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{basePath}}",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/token/refresh/:tokenId",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "dorix654@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "KamilPwd123",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/token/refresh/:token",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{basePath}}",
+							"path": [
+								"token",
+								"refresh",
+								":token"
+							],
+							"variable": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkb3JpeDY1NEBnbWFpbC5jb20iLCJpc3MiOiJBbmltYWxXb3JsZCIsImV4cCI6MTY5OTQ3NDMwNX0.-sfRWXsXPqJjHL-rO6wKofHCzDH6dR5b8563U5jG3HXtnyNo_8ThUSlEPYN_MKO7Ng411KJ1W4u16AdL4oKd2w"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/recovery",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/recovery/:email",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{basePath}}",
+							"path": [
+								"recovery",
+								":email"
+							],
+							"variable": [
+								{
+									"key": "email",
+									"value": "dorix654@gmail.com"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Checking 10 minute mail",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"firstname\": \"Kamil\",\r\n    \"lastname\": \"Wojciechowski\",\r\n    \"email\": \"jxw65546@xcoxc.com\",\r\n    \"password\": \"KamilPwd123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}{{basePath}}",
+									"path": [
+										"register"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Nov 2022 18:45:53 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"timestamp\": \"2022-11-10T18:45:53.365+00:00\",\n    \"status\": 500,\n    \"error\": \"Internal Server Error\",\n    \"message\": \"400 Email have wrong format!\",\n    \"path\": \"/api/v1/register\"\n}"
+						}
+					]
+				},
+				{
+					"name": "/recovery/token/:token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"test1234\",\r\n    \"confirmedPassword\": \"test1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/recovery/token/:tokenId",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}{{basePath}}",
+							"path": [
+								"recovery",
+								"token",
+								":tokenId"
+							],
+							"variable": [
+								{
+									"key": "tokenId",
+									"value": "2c920799-2bb1-4716-98cc-f67d04d331bb"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkb3JpeDY1NEBnbWFpbC5jb20iLCJyb2xlcyI6WyJDVVNUT01FUiJdLCJpc3MiOiJBbmltYWxXb3JsZCIsImV4cCI6MTY2ODM5ODA1NX0.o5Y80np22bISxH_tHdisBaTbaqyxIoQUfw9TSauqLR7tNOPoggIU4oBiWAxKPJZtjuNtfGGJPvKEvzGLma2Hzw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{protocol}}://{{host}}:{{port}}{{basePath}}/test",
+					"protocol": "{{protocol}}",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{port}}{{basePath}}",
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "protocol",
+			"value": "http",
+			"type": "string"
+		},
+		{
+			"key": "host",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "8080",
+			"type": "string"
+		},
+		{
+			"key": "basePath",
+			"value": "/api/v1",
+			"type": "string"
+		}
+	]
+}

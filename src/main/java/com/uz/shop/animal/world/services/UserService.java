@@ -5,6 +5,7 @@ import com.uz.shop.animal.world.repository.UserRepository;
 import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.models.TokenType;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,16 +19,22 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.uz.shop.animal.world.utils.Dictionary.*;
+
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
 
-    public static final String EMAIL_ALREADY_TAKEN = "Email already taken!";
-    private final UserRepository userRepository;
-    private final static String USER_NOT_FOUND = "User with email %s not found!";
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public final static Long expirationHours = Long.valueOf(12);
+
+    @Autowired
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private final UserRepository userRepository;
+    @Autowired
     private final TokenService tokenService;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

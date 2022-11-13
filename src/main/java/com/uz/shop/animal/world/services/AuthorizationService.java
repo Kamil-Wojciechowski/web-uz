@@ -81,7 +81,7 @@ public class AuthorizationService {
 
     public static Map<String, String> createTokenPair(User user) {
         Date createdAt = new Date(System.currentTimeMillis());
-        Date accessExpiresAt = new Date(System.currentTimeMillis() + refreshExpTime);
+        Date accessExpiresAt = new Date(System.currentTimeMillis() + accessExpTime);
         Date refExpiresAt = new Date(System.currentTimeMillis() + refreshExpTime);
 
         String accessToken = createAccessToken(user, accessExpiresAt);

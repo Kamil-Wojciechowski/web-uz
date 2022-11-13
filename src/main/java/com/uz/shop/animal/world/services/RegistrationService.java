@@ -1,5 +1,7 @@
 package com.uz.shop.animal.world.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.models.UserType;
 import com.uz.shop.animal.world.services.email.EmailSender;
@@ -8,6 +10,7 @@ import com.uz.shop.animal.world.request.RegistrationRequest;
 import com.uz.shop.animal.world.validator.EmailValidator;
 import com.uz.shop.animal.world.validator.PasswordValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,21 +18,27 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
+import static com.uz.shop.animal.world.utils.Dictionary.*;
+
 @Service
 @AllArgsConstructor
 public class RegistrationService {
-    private static final String WRONG_FORMAT_EMAIL = "Email have wrong format!";
-    public static final String TOKEN_NOT_FOUND = "Token not found!";
-    public static final String EMAIL_ALREADY_CONFIRMED = "Email already confirmed";
-    public static final String PASSWORD_ARE_NOT_THE_SAME = "Password are not the same!";
-    public static final String TOKEN_EXPIRED = "Token expired!";
+
+
+    @Autowired
+    private final ObjectMapper mapper;
+    @Autowired
     private final EmailValidator emailValidator;
+    @Autowired
     private final UserService userService;
+    @Autowired
     private final TokenService tokenService;
+    @Autowired
     private final EmailSender emailSender;
+    @Autowired
     private final PasswordValidator passwordValidator;
 
-    public String register(RegistrationRequest request) {
+    public ObjectNode register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
 
         if(!isValidEmail) {
@@ -50,11 +59,18 @@ public class RegistrationService {
 
         emailSender.send(request.getEmail(), token);
 
-        return token;
+        return registerResponse();
+    }
+
+    private ObjectNode registerResponse() {
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("message", EMAIL_SEND_CONFIRM);
+        objectNode.put("successful", true);
+        return objectNode;
     }
 
     @Transactional
-    public String confirmToken(String token) {
+    public ObjectNode confirmToken(String token) {
         Token tokenItem = tokenService.getToken(token)
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_NOT_FOUND));
 
@@ -68,7 +84,15 @@ public class RegistrationService {
 
         tokenService.deleteToken(tokenItem);
         userService.enableUser(tokenItem.getUser().getEmail());
-        return "Confirmed";
+
+        return confirmResponse();
+    }
+
+    private ObjectNode confirmResponse() {
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("message", "Email has been confirmed!");
+        objectNode.put("successful", true);
+        return objectNode;
     }
 
 
