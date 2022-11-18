@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.registration.token;
+package com.uz.shop.animal.world.models;
 
 public enum TokenType {
     REGISTER,

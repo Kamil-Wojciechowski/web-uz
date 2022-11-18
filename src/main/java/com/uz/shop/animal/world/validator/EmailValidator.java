@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.registration;
+package com.uz.shop.animal.world.validator;
 
 
 import org.json.JSONTokener;

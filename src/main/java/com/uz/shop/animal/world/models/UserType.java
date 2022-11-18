@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.user;
+package com.uz.shop.animal.world.models;
 
 public enum UserType {
     ADMIN,

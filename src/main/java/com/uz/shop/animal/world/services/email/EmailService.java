@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.email;
+package com.uz.shop.animal.world.services.email;
 
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;

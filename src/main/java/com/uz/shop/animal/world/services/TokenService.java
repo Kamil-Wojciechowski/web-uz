@@ -1,5 +1,7 @@
-package com.uz.shop.animal.world.registration.token;
+package com.uz.shop.animal.world.services;
 
+import com.uz.shop.animal.world.models.Token;
+import com.uz.shop.animal.world.repository.TokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,4 +24,6 @@ public class TokenService {
     public int setConfirmedAt(String token) {
         return tokenRepository.updateConfirmedAt(token, LocalDateTime.now());
     }
+
+    public void deleteToken(Token token) {tokenRepository.delete(token);}
 }

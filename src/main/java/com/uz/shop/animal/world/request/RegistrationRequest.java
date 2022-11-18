@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.registration;
+package com.uz.shop.animal.world.request;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -14,4 +14,5 @@ public class RegistrationRequest {
     private final String lastname;
     private final String email;
     private final String password;
+    private final String confirmedPassword;
 }
