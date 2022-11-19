@@ -1,8 +1,10 @@
 <template>
-  <HelloWorld/>
+  <router-view></router-view>
 </template>
 
-<script type="text/javascript" src="./main.js">
-
+<script>
+export default {
+  name: 'App',
+}
 </script>
 <style src="./assets/styles/app.css"></style>
