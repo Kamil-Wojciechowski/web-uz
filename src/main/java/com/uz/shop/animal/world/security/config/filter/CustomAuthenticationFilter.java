@@ -41,6 +41,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = userService.getUserByEmail(userDetails.getUsername());
         Map<String, String> tokens = AuthorizationService.createTokenPair(user);
         response.setContentType("application/json");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,PUT,DELETE,OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, Accept, X-Requested-With, Content-Type, Authorization");
+//        response.setHeader("Access-Control-Max-Age", "3600");
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 }

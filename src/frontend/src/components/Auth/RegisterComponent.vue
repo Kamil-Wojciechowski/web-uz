@@ -35,19 +35,12 @@
           confirmedPassword: this.form.repeatPassword
         })
 
-        let requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: prepareBody
-        }
-
-        fetch("/api/register", requestOptions)
-        .then(response => response.json())
+        this.axios.post("/register", prepareBody)
         .then( data => {
           console.log(data);
         })
         .catch(error => {
-          console.log(error);
+          console.log({error});
         });
       }
   

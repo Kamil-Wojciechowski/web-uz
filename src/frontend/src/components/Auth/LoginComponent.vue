@@ -22,23 +22,32 @@
     },
     methods: {
       login(){
-        let prepareBody = JSON.stringify({
-          email: this.form.email,
+        let prepareBody = {
+          username: this.form.email,
           password: this.form.password
-        })
+        };
 
-        let requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: prepareBody
+        let formBody = [];
+        for (var property in prepareBody) {
+          var encodedKey = encodeURIComponent(property);
+          var encodedValue = encodeURIComponent(prepareBody[property]);
+          formBody.push(encodedKey + "=" + encodedValue);
         }
+        formBody = formBody.join("&");
 
-        fetch("/api/login", requestOptions)
-        .then(response => response.json())
-        .then( data => {
-          console.log(data);
-            localStorage.setItem("token", "Bearer "+data.data.token);
+        console.log(formBody);
+
+        this.$http.post("/login", formBody, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
         })
+        .then(data => {
+          console.log(data);
+            // localStorage.setItem("token", "Bearer "+data.data.token);
+        }).catch(error => {
+          console.log({error});
+        });
       }
   
     }
