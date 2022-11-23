@@ -1,6 +1,7 @@
-package com.uz.shop.animal.world.validator;
+package com.uz.shop.animal.world.validators;
 
 
+import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import java.net.URL;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.json.JSONObject;
 
 @Service
 public class EmailValidator implements Predicate<String> {
@@ -48,7 +48,7 @@ public class EmailValidator implements Predicate<String> {
             }
 
             JSONObject jsonItem = new JSONObject(new JSONTokener(sb.toString()));
-            Boolean disposable = Boolean.valueOf(jsonItem.get("disposable").toString());
+            Boolean disposable = jsonItem.getBoolean("disposable");
 
             return disposable;
         } catch (Exception e) {

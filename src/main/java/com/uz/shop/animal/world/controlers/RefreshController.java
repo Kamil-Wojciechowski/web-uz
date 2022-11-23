@@ -29,7 +29,7 @@ public class RefreshController {
             try {
 
                 Map<String, String> tokens = AuthorizationService.refreshToken(refreshToken, userService);
-                response.setContentType("applcation/json");
+                response.setContentType("application/json");
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
             } catch (Exception e) {

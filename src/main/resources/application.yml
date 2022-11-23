@@ -8,10 +8,13 @@ server:
     include-message: always
     include-binding-errors: always
 
+recaptcha:
+  secret: "6LfhziwjAAAAANqzXgdzF94KhriJZPnJsWk2VJst"
+
 spring:
   datasource:
     username: root
-    password: root
+    password:
     url: jdbc:mysql://localhost:3306/web_uz
   jpa:
     hibernate:

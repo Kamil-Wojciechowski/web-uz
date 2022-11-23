@@ -1,4 +1,4 @@
-package com.uz.shop.animal.world.validator;
+package com.uz.shop.animal.world.validators;
 
 import org.springframework.stereotype.Service;
 

@@ -6,7 +6,7 @@ import com.uz.shop.animal.world.request.RecoveryRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.models.Token;
-import com.uz.shop.animal.world.validator.PasswordValidator;
+import com.uz.shop.animal.world.validators.PasswordValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
