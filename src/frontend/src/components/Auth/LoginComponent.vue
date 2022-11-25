@@ -1,13 +1,31 @@
 <template>
-    <h2>Logowanie - /login</h2>
-    <form @submit.prevent="onSubmit">
-      <p>Your email is: {{form.email}}</p>
-      <input type="email" v-model = "form.email" autocomplete="username" placeholder="Login"><br>
-      <input type="password" v-model="form.password" autocomplete="current-password" placeholder="Hasło"><br>
-      <button type="submit" @click='login()'>Zaloguj</button><br>
-      Zapomniałeś hasła? <router-link to="/recovery">Przypomnij.</router-link><br>
-      Nie masz konta? <router-link to="/register">Zarejestruj się.</router-link><br>
-    </form>
+    <br>
+  <h1 class="text-center">LOGOWANIE</h1>
+  <br>
+  <div class="card container">
+    <div class="card-body">
+      <form @submit.prevent="onSubmit">
+        <div class="form-group">
+          <input type="email" class="form-control" v-model = "form.email" autocomplete="username" placeholder="Login"><br>
+        </div>
+        <div class="form-group">
+          <input type="password" class="form-control" v-model="form.password" autocomplete="current-password" placeholder="Hasło"><br>
+        </div>
+        <div class="form-group">
+          <button class="btn btn-outline-info" type="submit" @click='login()'>Zaloguj</button><br>
+        </div>
+        <div class="form-group">
+          Zapomniałeś hasła? 
+          <router-link to="/recovery">Przypomnij.</router-link>
+        </div>
+        <div class="form-group">
+          Nie masz konta? 
+          <router-link to="/register">Zarejestruj się.</router-link>
+        </div>
+      </form>
+    </div>
+  </div>
+    
   </template>
   
   <script>
