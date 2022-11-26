@@ -1,0 +1,36 @@
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+nav {
+  border: 1px solid lightgray;
+}
+
+nav img {
+  margin-left: 1vh;
+  margin-right: 1vh;
+}
+
+.content {
+  margin: 0 auto;
+  width: 30vw !important;
+  text-align: center;
+}
+
+.main-button {
+  text-decoration: none;
+}
+
+.main-button:hover {
+  color: white !important;
+  text-decoration: none;
+}
+
+.btn-group {
+  margin-left: 1vh !important;
+  margin-right: 1vh !important;
+}
+/*# sourceMappingURL=app.css.map */

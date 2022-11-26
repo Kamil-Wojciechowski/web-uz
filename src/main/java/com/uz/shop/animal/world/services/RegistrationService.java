@@ -2,13 +2,14 @@ package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.models.UserType;
-import com.uz.shop.animal.world.services.email.EmailSender;
-import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.request.RegistrationRequest;
-import com.uz.shop.animal.world.validator.EmailValidator;
-import com.uz.shop.animal.world.validator.PasswordValidator;
+import com.uz.shop.animal.world.services.email.EmailSender;
+import com.uz.shop.animal.world.validators.EmailValidator;
+import com.uz.shop.animal.world.validators.PasswordValidator;
+import com.uz.shop.animal.world.validators.RecaptchaValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,12 +38,19 @@ public class RegistrationService {
     private final EmailSender emailSender;
     @Autowired
     private final PasswordValidator passwordValidator;
+    @Autowired
+    private final RecaptchaValidator recaptchaValidator;
 
     public ObjectNode register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
+        boolean isRecaptchaVerified = recaptchaValidator.test(request.getRecaptchaToken());
 
         if(!isValidEmail) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, WRONG_FORMAT_EMAIL);
+        }
+
+        if (!isRecaptchaVerified) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, INVALID_RECAPTCHA);
         }
 
         if(!passwordValidator.test(request.getPassword(), request.getConfirmedPassword())) {

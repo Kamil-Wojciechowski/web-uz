@@ -7,20 +7,31 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
+    public static final String ALLOWED_ORIGIN = "http://localhost:3000";
     @Autowired
     private final UserService userService;
     @Autowired
@@ -32,21 +43,68 @@ public class SecurityConfig {
                                            final AuthenticationConfiguration authenticationConfiguration) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), userService);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
-
         auth.authenticationProvider(authenticationProvider());
 
-        http.csrf().disable();
-        http.authorizeRequests().antMatchers("/api/v*/register/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/v*/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/v*/recovery/**").permitAll();
-        http.authorizeRequests().antMatchers("/api/v*/test");
-        http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(customAuthenticationFilter);
-        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http
+                .cors(withDefaults())
+                .csrf()
+                .disable()
+                .exceptionHandling()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/",
+                "/favicon.ico",
+                "/**/*.png",
+                "/**/*.ttf",
+                "/**/*.woff",
+                "/**/*.woff2",
+                "/**/*.gif",
+                "/**/*.svg",
+                "/**/*.jpg",
+                "/**/*.jpeg",
+                "/**/*.html",
+                "/**/*.css",
+                "/**/*.js",
+                "/error")
+                .permitAll()
 
-        return http.build();
+                .and()
+
+                .authorizeRequests()
+                .antMatchers("/api/v*/register/**", "/api/v*/token/refresh/**" ,"/api/v*/recovery/**")
+                .permitAll()
+
+                .and()
+
+                .authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
+
+                .and()
+
+                .authorizeRequests().anyRequest().authenticated()
+
+                .and()
+
+                .addFilter(customAuthenticationFilter)
+                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+
+                .build();
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081", "http://127.0.0.1:8081"));
+        configuration.setAllowedHeaders(Arrays.asList("access-control-allow-origin", "content-type"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

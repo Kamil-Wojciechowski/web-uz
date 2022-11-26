@@ -10,4 +10,5 @@ public class Dictionary {
     public static final String EMAIL_SEND_CONFIRM = "Email has been send. Please confirm your email!";
     public static final String EMAIL_ALREADY_TAKEN = "Email already taken!";
     public final static String USER_NOT_FOUND = "User with email %s not found!";
+    public final static String INVALID_RECAPTCHA = "Recaptcha is invalid";
 }
