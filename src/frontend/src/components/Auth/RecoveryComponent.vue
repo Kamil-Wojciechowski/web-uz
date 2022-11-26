@@ -10,7 +10,7 @@
               <input type="email" class="form-control" v-model = "form.email" autocomplete="username" placeholder="Email"><br>
             </div>
             <div class="form-group">
-              <button class="btn btn-outline-info" type="submit" @click='register()'>Przypomnij hasło</button><br>
+              <button class="btn btn-outline-info" type="submit" @click='recovery()'>Przypomnij hasło</button><br>
             </div>
             <div class="form-group">
               <span id="message"></span>
@@ -31,21 +31,22 @@
         data(){
           return {
             form:{
-              firstname: "",
-              lastname: "",
-              email: "",
-              password: "",
-              repeatPassword: "",
-              recaptchaToken: ""
+              email: ""
             }
           };
         },
         methods: {
-          onEvent() {
-            this.$refs.recaptcha.execute();
-          },
-          register(){
-            
+          recovery(){
+            let prepareBody = JSON.stringify({
+                email: this.form.email
+            });
+            this.axios.post("/recovery/"+this.form.email, prepareBody)
+                .then( data => {
+                console.log(data);
+                })
+                .catch(error => {
+                console.log({error});
+            });
         }
       }
     }
