@@ -1,9 +1,9 @@
 <template>
 
 <br>
-  <h1 class="text-center">REJESTRACJA</h1>
+  <h3 class="text-center">REJESTRACJA</h3>
   <br>
-  <div class="card container">
+  <div class="card content">
     <div class="card-body">
       <form @submit.prevent="onSubmit">
         <div class="form-group">
@@ -28,7 +28,7 @@
           <button class="btn btn-outline-info" type="submit" @click='register()'>Zarejestruj się</button><br>
         </div>
         <div class="form-group">
-          Masz już konto? <router-link to="/login">Zaloguj się.</router-link><br>
+          <br>Masz już konto? <router-link to="/login">Zaloguj się.</router-link><br>
         </div>
         
       </form>

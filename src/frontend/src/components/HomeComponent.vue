@@ -1,6 +1,6 @@
 <template>
   <br>
-  <h1 class="text-center">STRONA GŁÓWNA</h1>
+  <h3 class="text-center">STRONA GŁÓWNA</h3>
   <br>
   <ul class="nav justify-content-center">
   <li class="nav-item">

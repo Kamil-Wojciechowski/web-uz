@@ -1,8 +1,8 @@
 <template>
     <br>
-  <h1 class="text-center">LOGOWANIE</h1>
+  <h3 class="text-center">LOGOWANIE</h3>
   <br>
-  <div class="card container">
+  <div class="card content">
     <div class="card-body">
       <form @submit.prevent="onSubmit">
         <div class="form-group">
@@ -15,12 +15,12 @@
           <button class="btn btn-outline-info" type="submit" @click='login()'>Zaloguj</button><br>
         </div>
         <div class="form-group">
-          Zapomniałeś hasła? 
+          <br>Zapomniałeś hasła? 
           <router-link to="/recovery">Przypomnij.</router-link>
         </div>
         <div class="form-group">
           Nie masz konta? 
-          <router-link to="/register">Zarejestruj się.</router-link>
+          <router-link to="/register">Zarejestruj się.</router-link><br>
         </div>
       </form>
     </div>

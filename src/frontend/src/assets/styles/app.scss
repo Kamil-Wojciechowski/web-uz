@@ -12,3 +12,21 @@ nav{
         margin-right: 1vh;
     }
 }
+
+.content{
+    margin: 0 auto;
+    width: 30vw !important;
+    text-align: center;
+}
+
+.main-button{
+    text-decoration:none;
+    &:hover{
+        color: white !important;
+        text-decoration:none;
+    }
+}
+.btn-group{
+    margin-left: 1vh !important;
+    margin-right: 1vh !important;
+}
