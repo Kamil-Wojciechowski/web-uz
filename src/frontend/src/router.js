@@ -3,6 +3,7 @@ import HomeComponent from "./components/HomeComponent.vue";
 import LoginComponent from "./components/Auth/LoginComponent.vue";
 import RegisterComponent from "./components/Auth/RegisterComponent.vue";
 import RecoveryComponent from "./components/Auth/RecoveryComponent.vue";
+import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue"
 
 const routes = [
   {
@@ -24,6 +25,14 @@ const routes = [
     path: "/recovery",
     name: "Recovery",
     component: RecoveryComponent,
+  },
+  {
+    path: "/recovery/token/:token",
+    name: "RecoveryToken",
+    component: RecoveryTokenComponent,
+    params: {
+      token: ""
+    }
   },
 ];
 
