@@ -53,12 +53,13 @@ export default {
                     console.log(data);
                     console.log(this.$route.params.token);
                     this.form.message = data.data.message;
-
+                    this.form.error = "";
                 })
                 .catch(error => {
                     console.log(this.$route.params.token);
                     console.log(error);
                     this.form.error = error.response.data.message;
+                    this.form.message = "";
                 });
         }
     }

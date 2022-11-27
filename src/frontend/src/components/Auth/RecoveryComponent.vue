@@ -48,10 +48,11 @@ export default {
                 .then(data => {
                     console.log(data);
                     this.form.message = data.data.message;
-
+                    this.form.error = "";
                 })
                 .catch(error => {
                     this.form.error = error.response.data.message;
+                    this.form.message = "";
                 });
         }
     }
