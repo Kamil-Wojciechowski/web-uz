@@ -11,4 +11,8 @@ public class Dictionary {
     public static final String EMAIL_ALREADY_TAKEN = "Konto o takim emailu już istnieje.";
     public final static String USER_NOT_FOUND = "Nie znaleziono takiego konta.";
     public final static String INVALID_RECAPTCHA = "Chyba jesteś botem!";
+    public final static String INVALID_INPUT = "Pole wypełnione nieprawidłowo";
+    public final static String FIRSTNAME = "Imię";
+    public final static String LASTNAME = "Nazwisko";
+    public final static String PASSWORD = "Hasło";
 }
