@@ -33,7 +33,6 @@ public class RefreshController {
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
             } catch (Exception e) {
-
                 response.setHeader("error", e.getMessage());
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();
