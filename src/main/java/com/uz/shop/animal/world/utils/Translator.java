@@ -14,6 +14,9 @@ public class Translator {
             case "password":
                 sb = new StringBuilder(PASSWORD);
                 break;
+            case "name":
+                sb = new StringBuilder(NAME);
+                break;
             default:
                 sb = new StringBuilder(text);
                 break;
