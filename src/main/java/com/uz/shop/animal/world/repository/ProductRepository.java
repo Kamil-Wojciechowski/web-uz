@@ -6,10 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    @Override
+    Optional<Product> findById(Long aLong);
+
+    Optional<Product> findByName(String name);
 
     @Query(
             value = "SELECT * FROM product p WHERE p.is_visible = 1",
