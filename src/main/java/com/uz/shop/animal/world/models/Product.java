@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "product_tag_id")
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "product_tag_id",  referencedColumnName = "id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProductTag productTag;
 
     @Column(nullable = false)
@@ -30,6 +32,11 @@ public class Product {
 
     @Column(nullable = false)
     private Integer amount;
+
+    @Column(nullable = false)
+    private Double priceUnit;
+
+    private Boolean isVisible;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

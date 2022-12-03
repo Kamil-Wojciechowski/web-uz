@@ -31,7 +31,7 @@ public class ProductTag {
     private String name;
 
     @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent_id", referencedColumnName = "id")
     @JsonProperty("parentId")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProductTag parent;

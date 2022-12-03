@@ -91,6 +91,11 @@ public class SecurityConfig {
                 .permitAll();
 
         http
+            .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/v*/products")
+                .permitAll();
+
+        http
                 .authorizeRequests().anyRequest().authenticated();
 
         http
