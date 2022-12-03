@@ -5,11 +5,21 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.services.AuthorizationService;
+import com.uz.shop.animal.world.services.UserService;
+import com.uz.shop.animal.world.utils.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -25,39 +35,57 @@ import java.util.Map;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@Component
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private UserService user;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return new AntPathMatcher().match("/api/v*/login", request.getServletPath()) ||
+                new AntPathMatcher().match("/api/v*/register/**", request.getServletPath()) ||
+                new AntPathMatcher().match("/api/v*/token/refresh/**", request.getServletPath()) ||
+                new AntPathMatcher().match("/api/v*/register/**", request.getServletPath()) ||
+                new AntPathMatcher().match("/api/v*/recovery/**", request.getServletPath());
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getServletPath().equals("/api/v1/login") || request.getServletPath().equals("/api/v1/token/refresh/**")) {
-            filterChain.doFilter(request, response);
-        } else {
-            String authorizationHeader = request.getHeader(AUTHORIZATION);
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-                try {
-                    String token = authorizationHeader.substring("Bearer ".length());
-                    Algorithm algorithm = AuthorizationService.getAlgorithm();
-                    JWTVerifier verifier = JWT.require(algorithm).build();
-                    DecodedJWT decodedJWT = verifier.verify(token);
-                    String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
-                    Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-                    stream(roles).forEach(role -> {
-                        authorities.add(new SimpleGrantedAuthority(role));
-                            });
-                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                    filterChain.doFilter(request, response);
-                }catch (Exception e) {
-                    response.setHeader("error", e.getMessage());
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                    Map<String, String> error = new HashMap<>();
-                    error.put("error_message", e.getMessage());
-                    response.setContentType("application/json");
-                    new ObjectMapper().writeValue(response.getOutputStream(), error);
-                }
-            } else {
-                filterChain.doFilter(request, response);
+       final String requestTokenHeader = request.getHeader("Authorization");
+
+       String username = null;
+       String jwtToken = null;
+
+       if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+           jwtToken = requestTokenHeader.substring(7);
+           try {
+               username = jwtUtil.getUsernameFromToken(jwtToken);
+           } catch (IllegalArgumentException e) {
+               System.out.println("Unable to get JWT Token");
+           } catch (ExpiredJwtException e) {
+               System.out.println("JWT Token has expired");
+           }
+       } else {
+           logger.warn("JWT Token does not begin with Bearer String");
+       }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            UserDetails userDetails = user.loadUserByUsername(username);
+
+            if (jwtUtil.validateToken(jwtToken, userDetails)) {
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken
+                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
+
+        filterChain.doFilter(request, response);
     }
 }

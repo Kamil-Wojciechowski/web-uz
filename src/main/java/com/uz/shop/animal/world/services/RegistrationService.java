@@ -52,9 +52,9 @@ public class RegistrationService {
             return ErrorResponseCreator.buildResponse(HttpStatus.BAD_REQUEST,"Error", WRONG_FORMAT_EMAIL);
         }
 
-        if (!isRecaptchaVerified) {
-            return ErrorResponseCreator.buildResponse(HttpStatus.BAD_REQUEST, "Error", INVALID_RECAPTCHA);
-        }
+//        if (!isRecaptchaVerified) {
+//            return ErrorResponseCreator.buildResponse(HttpStatus.BAD_REQUEST, "Error", INVALID_RECAPTCHA);
+//        }
 
         if(!passwordValidator.test(request.getPassword(), request.getConfirmedPassword())) {
             return ErrorResponseCreator.buildBadRequest("Error", PASSWORD_ARE_NOT_THE_SAME);
@@ -64,7 +64,7 @@ public class RegistrationService {
                 request.getFirstname(),
                 request.getLastname(),
                 request.getEmail(),
-                UserType.CUSTOMER,
+                UserType.ROLE_CUSTOMER,
                 request.getPassword()
                 ));
 

@@ -36,8 +36,8 @@ public class RegistrationRequest {
     @NotEmpty
     @JsonProperty("confirmedPassword")
     private final String confirmedPassword;
-    @NotNull
-    @NotEmpty
+//    @NotNull
+//    @NotEmpty
     @JsonProperty("recaptchaToken")
     private final String recaptchaToken;
 }

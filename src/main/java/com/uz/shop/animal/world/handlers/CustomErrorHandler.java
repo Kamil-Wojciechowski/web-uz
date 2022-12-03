@@ -7,6 +7,7 @@ import com.uz.shop.animal.world.utils.Translator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -48,5 +49,14 @@ public class CustomErrorHandler extends ResponseEntityExceptionHandler {
         objectNode.put("message", "Error");
         return ResponseEntity.status(exception.getRawStatusCode()).body(objectNode);
     }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
+//        ArrayNode arrayNode = objectNode.putArray("errors");
+//        arrayNode.add(exception.getMessage());
+//        objectNode.put("Status", exception.getMessage());
+//        objectNode.put("message", "Error");
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+//    }
 
 }

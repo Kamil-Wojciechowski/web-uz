@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
@@ -38,6 +39,7 @@ public class ProductTagService {
         return ResponseEntity.status(HttpStatus.CREATED).body(tree);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ObjectNode> create(ProductTagRequest request) {
         boolean productExists = productTagRepository.findByName(request.getName()).isPresent();
 
@@ -67,7 +69,7 @@ public class ProductTagService {
         ObjectNode tree = mapper.valueToTree(productTag);
         return ResponseEntity.ok(tree);
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ObjectNode> update(Integer id, ProductTagRequest request) {
         ProductTag productTag = getProduct(id);
 
@@ -91,6 +93,7 @@ public class ProductTagService {
         return updateResponse(updated);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity.BodyBuilder delete(Integer id) {
         ProductTag product = getProduct(id);
 
