@@ -7,6 +7,7 @@ import com.uz.shop.animal.world.utils.Translator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,13 +51,21 @@ public class CustomErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(exception.getRawStatusCode()).body(objectNode);
     }
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
-//        ArrayNode arrayNode = objectNode.putArray("errors");
-//        arrayNode.add(exception.getMessage());
-//        objectNode.put("Status", exception.getMessage());
-//        objectNode.put("message", "Error");
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
-//    }
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<FieldError> errorList = ex
+                .getBindingResult()
+                .getFieldErrors();
+
+        ArrayNode arrayNode = objectNode.putArray("errors");
+        for(FieldError error : errorList) {
+            arrayNode.add(
+                    Translator.translate(error.getField()) + " : " +  error.getDefaultMessage()
+            );
+        }
+        objectNode.put("Status", HttpStatus.BAD_REQUEST.name());
+        objectNode.put("message", "Error");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
+    }
 
 }

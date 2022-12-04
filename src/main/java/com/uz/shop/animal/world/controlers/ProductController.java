@@ -2,6 +2,7 @@ package com.uz.shop.animal.world.controlers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.Product;
+import com.uz.shop.animal.world.request.ProductPostRequest;
 import com.uz.shop.animal.world.request.ProductRequest;
 import com.uz.shop.animal.world.services.ProductService;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class ProductController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<ObjectNode> createProduct(@Valid @RequestBody ProductRequest product) {
+    public ResponseEntity<ObjectNode> createProduct(@Valid @RequestBody ProductPostRequest product) {
         return productService.create(product);
     }
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")

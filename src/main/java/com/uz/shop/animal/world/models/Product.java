@@ -33,12 +33,24 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
+    @JsonProperty("description")
+    private String description;
+
+    @Column(nullable = false)
     @JsonProperty("amount")
     private Integer amount;
 
     @Column(nullable = false)
     @JsonProperty("priceUnit")
     private Double priceUnit;
+
+    @Column(nullable = false)
+    @JsonProperty("imageBase")
+    private String imageBase;
+
+    @Column
+    @JsonProperty("videoUrl")
+    private String videoUrl;
 
     @JsonProperty("isVisible")
     private Boolean isVisible = false;
@@ -48,11 +60,14 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Product(ProductTag productTag, String name, Integer amount, Double priceUnit, Boolean isVisible) {
+    public Product(ProductTag productTag, String name, String description, Integer amount, Double priceUnit, String imageBase, String videoUrl, Boolean isVisible) {
         this.productTag = productTag;
         this.name = name;
+        this.description = description;
         this.amount = amount;
         this.priceUnit = priceUnit;
+        this.imageBase = imageBase;
+        this.videoUrl = videoUrl;
         this.isVisible = isVisible;
     }
 }

@@ -6,6 +6,7 @@ import com.uz.shop.animal.world.models.Product;
 import com.uz.shop.animal.world.models.ProductTag;
 import com.uz.shop.animal.world.repository.ProductRepository;
 import com.uz.shop.animal.world.repository.ProductTagRepository;
+import com.uz.shop.animal.world.request.ProductPostRequest;
 import com.uz.shop.animal.world.request.ProductRequest;
 import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,7 @@ import org.springframework.web.client.RestClientResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.uz.shop.animal.world.utils.Dictionary.*;
 
@@ -55,11 +56,7 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<ObjectNode> create(ProductRequest request) {
-        if(request.isAnyFieldNull()) {
-            return ErrorResponseCreator.buildBadRequest("Error", INVALID_INPUTS);
-        }
-
+    public ResponseEntity<ObjectNode> create(ProductPostRequest request) {
         if(productRepository.findByName(request.getName()).isPresent()) {
             return ErrorResponseCreator.buildBadRequest("Error", ALREADY_EXISTS);
         }
@@ -77,8 +74,11 @@ public class ProductService {
         Product savedProduct = productRepository.save(new Product(
                 productTag,
                 request.getName(),
+                request.getDescription(),
                 request.getAmount(),
                 request.getPriceUnit(),
+                request.getImageBase(),
+                request.getVideoUrl(),
                 request.getIsVisible()
         ));
 
@@ -93,31 +93,46 @@ public class ProductService {
     }
 
     private void setProduct(ProductRequest request, Product product) {
-        if(!request.isNameNull()) {
-            if(productRepository.findByName(request.getName()).isPresent()) {
-                throw new RestClientResponseException(ALREADY_EXISTS, 400, HttpStatus.BAD_REQUEST.name(), null, null, null);
+        Map<String, Object> map = request.getHashMap();
+
+        map.forEach((key, value) -> {
+            if(value != null) {
+                switch (key) {
+                    case "name":
+                        product.setName(value.toString());
+                        break;
+                    case "productTag":
+                        ProductTag productTag = productTagRepository.findById((Integer) value)
+                                .orElseThrow(() ->
+                                        new RestClientResponseException(TAG_NOT_FOUND, 400, HttpStatus.NOT_FOUND.name(), null, null, null)
+                                );
+
+                        product.setProductTag(productTag);
+                        break;
+                    case "description":
+                        product.setDescription(value.toString());
+                        break;
+                    case "amount":
+                        product.setAmount((Integer) value);
+                        break;
+                    case "priceUnity":
+                        product.setPriceUnit((Double) value);
+                        break;
+                    case "imageBase":
+                        product.setImageBase(value.toString());
+                        break;
+                    case "videoUrl":
+                        product.setVideoUrl(value.toString());
+                        break;
+                    case "isVisible":
+                        if(product.getIsVisible() != Boolean.valueOf(value.toString())) {
+                            product.setIsVisible(Boolean.valueOf(value.toString()));
+                        }
+                        break;
+
+                }
             }
-            product.setName(request.getName());
-        }
-
-        if(!request.isAmountNull()) {
-            product.setAmount(request.getAmount());
-        }
-
-        if(!request.isProductTagNull()) {
-            ProductTag productTag = productTagRepository.findById(request.getProductTag())
-                    .orElseThrow(() ->
-                            new RestClientResponseException(TAG_NOT_FOUND, 400, HttpStatus.NOT_FOUND.name(), null, null, null)
-                    );
-
-            product.setProductTag(productTag);
-        }
-
-        if(!request.isPriceUnitNull()) {
-            product.setPriceUnit(request.getPriceUnit());
-        }
-
-        product.setIsVisible(request.getIsVisible());
+        });
     }
 
     public ResponseEntity<ObjectNode> update(Long productId, ProductRequest request) {
