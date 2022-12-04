@@ -12,12 +12,10 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import javax.persistence.GenerationType;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Product {
     @Id
@@ -46,9 +44,9 @@ public class Product {
     private Boolean isVisible = false;
 
     @CreationTimestamp
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @UpdateTimestamp
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
     public Product(ProductTag productTag, String name, Integer amount, Double priceUnit, Boolean isVisible) {
         this.productTag = productTag;

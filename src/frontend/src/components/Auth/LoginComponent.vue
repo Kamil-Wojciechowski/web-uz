@@ -47,7 +47,7 @@ export default {
     },
     login() {
       let prepareBody = {
-        username: this.form.email,
+        email: this.form.email,
         password: this.form.password
       };
 
@@ -58,8 +58,6 @@ export default {
         formBody.push(encodedKey + "=" + encodedValue);
       }
       formBody = formBody.join("&");
-
-      console.log(formBody);
 
       this.$http.post("/login", formBody, {
         headers: {

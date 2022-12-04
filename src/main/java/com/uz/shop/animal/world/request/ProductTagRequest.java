@@ -15,7 +15,7 @@ import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
 @Valid
 @Getter
 public class ProductTagRequest {
-    private static final Integer LENGTH_NAME_MAX = 2;
+    private static final Integer LENGTH_NAME_MIN = 2;
     @JsonProperty("name")
     private String name = "";
 
@@ -28,7 +28,7 @@ public class ProductTagRequest {
         if(this.name == null) {
             return true;
         } else {
-            return this.name.length() > LENGTH_NAME_MAX;
+            return this.name.length() > LENGTH_NAME_MIN;
         }
     }
 }

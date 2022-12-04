@@ -12,11 +12,13 @@ public class Dictionary {
     public final static String USER_NOT_FOUND = "Nie znaleziono takiego konta.";
     public final static String INVALID_RECAPTCHA = "Chyba jesteś botem!";
     public final static String INVALID_INPUT = "Pole wypełnione nieprawidłowo";
+    public final static String INVALID_INPUTS = "Pola wypełnione nieprawidłowo";
     public final static String FIRSTNAME = "Imię";
     public final static String LASTNAME = "Nazwisko";
     public final static String PASSWORD = "Hasło";
     public final static String NAME = "Nazwa";
     public final static String ALREADY_EXISTS = "Taki element już istnieje";
     public final static String PRODUCT_PARENT_NOT_FOUND = "parentId : Produkt nie istnieje";
+    public final static String TAG_NOT_FOUND = "Tag : Taki tag nie istnieje";
     public final static String ITEM_NOT_FOUND = "Nie znaleziono elementu o podanym Id";
 }

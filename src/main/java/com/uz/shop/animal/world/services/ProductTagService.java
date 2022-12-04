@@ -25,13 +25,11 @@ public class ProductTagService {
     private final ProductTagRepository productTagRepository;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final ObjectNode objectNode = new ObjectMapper().createObjectNode();
-
     public ResponseEntity<List<ProductTag>> getAll() {
         return ResponseEntity.ok(productTagRepository.findAll());
     }
 
-    private ProductTag getProduct(Integer id) {
+    private ProductTag getProductTag(Integer id) {
         return productTagRepository.findById(id).orElseThrow(()-> new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));
     }
     private ResponseEntity<ObjectNode> createResponse(ProductTag productTag) {
@@ -39,7 +37,6 @@ public class ProductTagService {
         return ResponseEntity.status(HttpStatus.CREATED).body(tree);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ObjectNode> create(ProductTagRequest request) {
         boolean productExists = productTagRepository.findByName(request.getName()).isPresent();
 
@@ -69,9 +66,9 @@ public class ProductTagService {
         ObjectNode tree = mapper.valueToTree(productTag);
         return ResponseEntity.ok(tree);
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     public ResponseEntity<ObjectNode> update(Integer id, ProductTagRequest request) {
-        ProductTag productTag = getProduct(id);
+        ProductTag productTag = getProductTag(id);
 
         if(request.getParent() == null) {
             productTag.setParent(null);
@@ -93,14 +90,11 @@ public class ProductTagService {
         return updateResponse(updated);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity.BodyBuilder delete(Integer id) {
-        ProductTag product = getProduct(id);
+        ProductTag product = getProductTag(id);
 
         productTagRepository.delete(product);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT);
     }
-
-
 }
