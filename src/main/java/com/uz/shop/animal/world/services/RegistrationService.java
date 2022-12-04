@@ -64,7 +64,7 @@ public class RegistrationService {
                 request.getFirstname(),
                 request.getLastname(),
                 request.getEmail(),
-                UserType.CUSTOMER,
+                UserType.ROLE_CUSTOMER,
                 request.getPassword()
                 ));
 

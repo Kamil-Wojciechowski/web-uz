@@ -1,6 +1,6 @@
 package com.uz.shop.animal.world.models;
 
 public enum UserType {
-    ADMIN,
-    CUSTOMER
+    ROLE_ADMIN,
+    ROLE_CUSTOMER
 }

@@ -2,6 +2,7 @@ package com.uz.shop.animal.world.security.config;
 
 import com.uz.shop.animal.world.security.config.filter.CustomAuthenticationFilter;
 import com.uz.shop.animal.world.security.config.filter.CustomAuthorizationFilter;
+import com.uz.shop.animal.world.services.AuthorizationService;
 import com.uz.shop.animal.world.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,31 +30,37 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-
-    public static final String ALLOWED_ORIGIN = "http://localhost:3000";
     @Autowired
     private final UserService userService;
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private final AuthorizationService authorizationService;
+
+    @Autowired
+    private CustomAuthorizationFilter customAuthorizationFilter;
+
+
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http,
                                            final AuthenticationManagerBuilder auth,
                                            final AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), userService);
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationConfiguration.getAuthenticationManager(), userService, authorizationService);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         auth.authenticationProvider(authenticationProvider());
 
-        return http
+
+        http
                 .cors(withDefaults())
                 .csrf()
                 .disable()
-                .exceptionHandling()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .exceptionHandling().and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http
                 .authorizeRequests()
                 .antMatchers("/",
                 "/favicon.ico",
@@ -69,30 +76,36 @@ public class SecurityConfig {
                 "/**/*.css",
                 "/**/*.js",
                 "/error")
-                .permitAll()
+                .permitAll();
 
-                .and()
-
+        http
                 .authorizeRequests()
                 .antMatchers("/api/v*/register/**", "/api/v*/token/refresh/**" ,"/api/v*/recovery/**")
-                .permitAll()
+                .permitAll();
 
-                .and()
-
+        http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
-                .permitAll()
+                .permitAll();
 
-                .and()
+        http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/v*/products/tags")
+                .permitAll();
 
-                .authorizeRequests().anyRequest().authenticated()
+        http
+            .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/v*/products")
+                .permitAll();
 
-                .and()
+        http
+                .authorizeRequests().anyRequest().authenticated();
 
+        http
                 .addFilter(customAuthenticationFilter)
-                .addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
-                .build();
+        return http.build();
     }
 
     @Bean

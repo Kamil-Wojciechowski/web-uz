@@ -41,4 +41,12 @@ public class ErrorResponseCreator {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(objectNode);
     }
 
+    public static ResponseEntity<ObjectNode> buildNotFound(String message, String error) {
+        ArrayNode arrayNode = objectNode.putArray("errors");
+        arrayNode.add(error);
+        objectNode.put("Status", HttpStatus.NOT_FOUND.name());
+        objectNode.put("message", message);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(objectNode);
+    }
+
 }
