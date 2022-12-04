@@ -18,12 +18,12 @@ public class RecoveryController {
 
     @PostMapping("/{email}")
     public ResponseEntity<ObjectNode> recovery(@PathVariable("email") String email) {
-        return new ResponseEntity<>(recoveryService.recovery(email), HttpStatus.CREATED);
+        return recoveryService.recovery(email);
     }
 
     @PostMapping("/token/{token}")
     public ResponseEntity<ObjectNode> confirm(@PathVariable("token") String token, @Valid @RequestBody RecoveryRequest recoveryRequest) {
-        return new ResponseEntity<>(recoveryService.confirmToken(token, recoveryRequest), HttpStatus.OK);
+        return recoveryService.confirmToken(token, recoveryRequest);
     }
 
 }

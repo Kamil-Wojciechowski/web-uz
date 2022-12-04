@@ -1,10 +1,14 @@
 package com.uz.shop.animal.world.controlers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.services.AuthorizationService;
 import com.uz.shop.animal.world.services.UserService;
+import com.uz.shop.animal.world.utils.JwtUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,21 +23,28 @@ import java.util.*;
 @RequestMapping(path = "api/v1/token/refresh")
 @AllArgsConstructor
 public class RefreshController {
+    @Autowired
+    private final AuthorizationService authorizationService;
 
+    @Autowired
     private final UserService userService;
+    @Autowired
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/{refreshToken}")
     public void refreshToken(@PathVariable("refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         if (refreshToken != null) {
             try {
+                String email = jwtUtil.getUsernameFromToken(refreshToken);
 
-                Map<String, String> tokens = AuthorizationService.refreshToken(refreshToken, userService);
+                UserDetails user = userService.loadUserByUsername(email);
+
+                Map<String, String> tokens = authorizationService.refreshToken(refreshToken, user);
                 response.setContentType("application/json");
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 
             } catch (Exception e) {
-
                 response.setHeader("error", e.getMessage());
                 response.setStatus(HttpStatus.FORBIDDEN.value());
                 Map<String, String> error = new HashMap<>();

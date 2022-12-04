@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping(path = "api/v1/register")
 @AllArgsConstructor
@@ -16,11 +18,11 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @PostMapping
-    public ResponseEntity<ObjectNode> register(@RequestBody RegistrationRequest request) {
-        return new ResponseEntity<>(registrationService.register(request), HttpStatus.CREATED);
+    public ResponseEntity<ObjectNode> register(@Valid @RequestBody RegistrationRequest request) {
+        return registrationService.register(request);
     }
     @PostMapping("/{token}")
     public ResponseEntity<ObjectNode> confirm(@PathVariable("token") String token) {
-        return new ResponseEntity<>(registrationService.confirmToken(token), HttpStatus.OK);
+        return registrationService.confirmToken(token);
     }
 }

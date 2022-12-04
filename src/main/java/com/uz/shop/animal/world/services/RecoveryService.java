@@ -6,14 +6,18 @@ import com.uz.shop.animal.world.request.RecoveryRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.models.Token;
+import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import com.uz.shop.animal.world.validators.PasswordValidator;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.time.LocalDateTime;
 
@@ -35,7 +39,7 @@ public class RecoveryService {
     @Autowired
     private final ObjectMapper mapper;
 
-    public ObjectNode recovery(String email) {
+    public ResponseEntity<ObjectNode> recovery(String email) {
         User user = userService.getUserByEmail(email);
 
         String token = userService.recoveryUser(user);
@@ -45,27 +49,28 @@ public class RecoveryService {
         return recoveryResponse();
     }
 
-    private ObjectNode recoveryResponse() {
+    private ResponseEntity<ObjectNode> recoveryResponse() {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("message", RECOVERY_EMAIL);
         objectNode.put("successful", true);
-        return objectNode;
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
     @Transactional
-    public ObjectNode confirmToken(String token, RecoveryRequest recoveryRequest) {
+    public ResponseEntity<ObjectNode> confirmToken(String token, RecoveryRequest recoveryRequest) {
         Token tokenItem = tokenService.getToken(token)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new RestClientResponseException(TOKEN_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null));
+
 
         LocalDateTime expiredAt = tokenItem.getExpiresAt();
 
         if(expiredAt.isBefore(LocalDateTime.now())) {
             tokenService.deleteToken(tokenItem);
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_EXPIRED);
+            return ErrorResponseCreator.buildBadRequest("Error", TOKEN_EXPIRED);
         }
 
         if(!passwordValidator.test(recoveryRequest.getConfirmedPassword(), recoveryRequest.getConfirmedPassword())) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, PASSWORD_ARE_NOT_THE_SAME);
+            return ErrorResponseCreator.buildBadRequest("Error", PASSWORD_ARE_NOT_THE_SAME);
         }
 
         User user = tokenItem.getUser();
@@ -75,10 +80,10 @@ public class RecoveryService {
         return confirmResponse();
     }
 
-    private ObjectNode confirmResponse() {
+    private ResponseEntity<ObjectNode> confirmResponse() {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("message", PASSWORD_CHANGED_SUCCESSFULLY);
         objectNode.put("successful", true);
-        return objectNode;
+        return ResponseEntity.ok(objectNode);
     }
 }

@@ -6,7 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
+
+import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
+import static com.uz.shop.animal.world.utils.Dictionary.WRONG_FORMAT_EMAIL;
 
 @Getter
 @AllArgsConstructor
@@ -14,21 +17,27 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class RegistrationRequest {
     @NotNull
+    @Size(min=2, message = INVALID_INPUT)
     @JsonProperty("firstname")
     private final String firstname;
     @NotNull
+    @Size(min=2, message = INVALID_INPUT)
     @JsonProperty("lastname")
     private final String lastname;
     @NotNull
+    @Email(message = WRONG_FORMAT_EMAIL)
     @JsonProperty("email")
     private final String email;
     @NotNull
+    @NotEmpty
     @JsonProperty("password")
     private final String password;
     @NotNull
+    @NotEmpty
     @JsonProperty("confirmedPassword")
     private final String confirmedPassword;
-    @NotNull
+//    @NotNull
+//    @NotEmpty
     @JsonProperty("recaptchaToken")
     private final String recaptchaToken;
 }

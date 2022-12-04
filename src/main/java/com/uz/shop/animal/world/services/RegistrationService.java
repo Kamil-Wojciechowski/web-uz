@@ -1,21 +1,26 @@
 package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.models.UserType;
 import com.uz.shop.animal.world.request.RegistrationRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
+import com.uz.shop.animal.world.utils.Dictionary;
+import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import com.uz.shop.animal.world.validators.EmailValidator;
 import com.uz.shop.animal.world.validators.PasswordValidator;
 import com.uz.shop.animal.world.validators.RecaptchaValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.time.LocalDateTime;
 
@@ -24,10 +29,6 @@ import static com.uz.shop.animal.world.utils.Dictionary.*;
 @Service
 @AllArgsConstructor
 public class RegistrationService {
-
-
-    @Autowired
-    private final ObjectMapper mapper;
     @Autowired
     private final EmailValidator emailValidator;
     @Autowired
@@ -41,27 +42,29 @@ public class RegistrationService {
     @Autowired
     private final RecaptchaValidator recaptchaValidator;
 
-    public ObjectNode register(RegistrationRequest request) {
+    private final ObjectNode objectNode = new ObjectMapper().createObjectNode();
+
+    public ResponseEntity<ObjectNode> register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
         boolean isRecaptchaVerified = recaptchaValidator.test(request.getRecaptchaToken());
 
         if(!isValidEmail) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, WRONG_FORMAT_EMAIL);
+            return ErrorResponseCreator.buildResponse(HttpStatus.BAD_REQUEST,"Error", WRONG_FORMAT_EMAIL);
         }
 
         if (!isRecaptchaVerified) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, INVALID_RECAPTCHA);
+            return ErrorResponseCreator.buildResponse(HttpStatus.BAD_REQUEST, "Error", INVALID_RECAPTCHA);
         }
 
         if(!passwordValidator.test(request.getPassword(), request.getConfirmedPassword())) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, PASSWORD_ARE_NOT_THE_SAME);
+            return ErrorResponseCreator.buildBadRequest("Error", PASSWORD_ARE_NOT_THE_SAME);
         }
 
         String token = userService.signUpUser(new User(
                 request.getFirstname(),
                 request.getLastname(),
                 request.getEmail(),
-                UserType.CUSTOMER,
+                UserType.ROLE_CUSTOMER,
                 request.getPassword()
                 ));
 
@@ -70,24 +73,24 @@ public class RegistrationService {
         return registerResponse();
     }
 
-    private ObjectNode registerResponse() {
-        ObjectNode objectNode = mapper.createObjectNode();
+    private ResponseEntity<ObjectNode> registerResponse() {
         objectNode.put("message", EMAIL_SEND_CONFIRM);
+        objectNode.put("data", new ObjectMapper().createObjectNode());
         objectNode.put("successful", true);
-        return objectNode;
+        return ResponseEntity.status(HttpStatus.CREATED).body(objectNode);
     }
 
     @Transactional
-    public ObjectNode confirmToken(String token) {
+    public ResponseEntity<ObjectNode> confirmToken(String token) {
         Token tokenItem = tokenService.getToken(token)
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_NOT_FOUND));
+                .orElseThrow(() -> new RestClientResponseException(TOKEN_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null));
 
         LocalDateTime expiredAt = tokenItem.getExpiresAt();
 
         if(expiredAt.isBefore(LocalDateTime.now())) {
             tokenService.deleteToken(tokenItem);
             userService.createNewRegisterToken(tokenItem.getUser());
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, TOKEN_EXPIRED);
+            return ErrorResponseCreator.buildBadRequest("Error", TOKEN_EXPIRED);
         }
 
         tokenService.deleteToken(tokenItem);
@@ -96,11 +99,11 @@ public class RegistrationService {
         return confirmResponse();
     }
 
-    private ObjectNode confirmResponse() {
-        ObjectNode objectNode = mapper.createObjectNode();
+    private ResponseEntity<ObjectNode> confirmResponse() {
         objectNode.put("message", "Email has been confirmed!");
+        objectNode.put("data", new ObjectMapper().createObjectNode());
         objectNode.put("successful", true);
-        return objectNode;
+        return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
 

@@ -1,6 +1,5 @@
 package com.uz.shop.animal.world.models;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +17,11 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
+import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
+import static com.uz.shop.animal.world.utils.Dictionary.WRONG_FORMAT_EMAIL;
+
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @Entity
 public class User implements UserDetails {
@@ -30,15 +31,15 @@ public class User implements UserDetails {
     private Long id;
 
     @NotEmpty
-    @Size(min=2, message = "User should have at least 2 characters")
+    @Size(min=2, message = INVALID_INPUT)
     private String firstname;
 
     @NotEmpty
-    @Size(min=2, message = "User should have at least 2 characters")
+    @Size(min=2, message = INVALID_INPUT)
     private String lastname;
 
     @NotEmpty
-    @Email
+    @Email(message = WRONG_FORMAT_EMAIL)
     private String email;
 
     @Enumerated(EnumType.STRING)

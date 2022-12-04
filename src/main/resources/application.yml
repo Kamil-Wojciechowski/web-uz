@@ -6,7 +6,8 @@ server:
     refreshExpTime: "31104000000"
   error:
     include-message: always
-    include-binding-errors: always
+    include-binding-errors: never
+    include-stacktrace: never
 
 recaptcha:
   secret: "6LfhziwjAAAAANqzXgdzF94KhriJZPnJsWk2VJst"
@@ -14,7 +15,7 @@ recaptcha:
 spring:
   datasource:
     username: root
-    password:
+    password: root
     url: jdbc:mysql://localhost:3306/web_uz
   jpa:
     hibernate:

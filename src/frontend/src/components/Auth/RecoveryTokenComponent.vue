@@ -1,22 +1,21 @@
 <template>
+
     <br>
-    <h3 class="text-center">ODZYSKIWANIE</h3>
+    <h3 class="text-center">NOWE HASŁO</h3>
     <br>
     <div class="card content">
         <div class="card-body">
             <form @submit.prevent="onSubmit()">
                 <div class="form-group">
-                    <input type="email" class="form-control" v-model="form.email" placeholder="Email" required><br>
+                    <input type="password" class="form-control" v-model="form.password" placeholder="Hasło" required
+                        minlength="8"><br>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Przypomnij hasło</button><br>
+                    <input type="password" class="form-control" v-model="form.confirmedPassword"
+                        placeholder="Powtórz hasło" required minlength="8"><br>
                 </div>
                 <div class="form-group">
-                    <span id="message"></span>
-                </div>
-                <div class="form-group">
-                    <br>Nie masz konta?
-                    <router-link to="/register">Zarejestruj się.</router-link><br>
+                    <button class="btn btn-outline-info" type="submit">Zmień hasło</button><br>
                 </div>
                 <div class="text-danger">{{ form.error }}</div>
                 <div class="text-info">{{ form.message }}</div>
@@ -30,9 +29,11 @@ export default {
     data() {
         return {
             form: {
-                email: "",
-                error: "",
-                message: ""
+                password: "",
+                confirmedPassword: "",
+                errors: "",
+                message: "",
+                check: ""
             }
         };
     },
@@ -42,15 +43,21 @@ export default {
         },
         recovery() {
             let prepareBody = JSON.stringify({
-                email: this.form.email
+                password: this.form.password,
+                confirmedPassword: this.form.confirmedPassword
             });
-            this.axios.post("/recovery/" + this.form.email, prepareBody)
+
+            console.log(prepareBody);
+            this.axios.post("/recovery/token/" + this.$route.params.token, prepareBody)
                 .then(data => {
                     console.log(data);
+                    console.log(this.$route.params.token);
                     this.form.message = data.data.message;
                     this.form.error = "";
                 })
                 .catch(error => {
+                    console.log(this.$route.params.token);
+                    console.log(error);
                     this.form.error = error.response.data.message;
                     this.form.message = "";
                 });

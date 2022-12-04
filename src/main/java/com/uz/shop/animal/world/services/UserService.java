@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientResponseException;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -54,7 +55,7 @@ public class UserService implements UserDetailsService {
                 .isPresent();
 
         if(userExists) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, EMAIL_ALREADY_TAKEN);
+            throw new RestClientResponseException(EMAIL_ALREADY_TAKEN, 400, HttpStatus.BAD_REQUEST.name(), null, null, null);
         }
 
         String encodedPassword = bCryptPasswordEncoder
