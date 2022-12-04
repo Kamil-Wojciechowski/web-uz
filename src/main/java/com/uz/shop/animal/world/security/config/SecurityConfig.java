@@ -80,9 +80,8 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests()
-                .antMatchers("/api/v*/register/**", "/api/v*/token/refresh/**" ,"/api/v*/recovery/**")
+                .antMatchers("/api/v*/register/**", "/api/v*/token/refresh/**" ,"/api/v*/recovery/**", "/api/v*/pdf/**")
                 .permitAll();
-
         http
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**")
