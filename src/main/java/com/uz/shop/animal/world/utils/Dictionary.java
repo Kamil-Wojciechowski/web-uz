@@ -17,16 +17,28 @@ public class Dictionary {
     public final static String TAG_NOT_FOUND = "Tag : Taki tag nie istnieje";
     public final static String ITEM_NOT_FOUND = "Nie znaleziono elementu o podanym Id";
 
-class Inputs {
-    public final static String FIRSTNAME = "Imię";
-    public final static String LASTNAME = "Nazwisko";
-    public final static String PASSWORD = "Hasło";
-    public final static String NAME = "Nazwa";
-    public final static String AMOUNT = "Ilość";
-    public final static String PRODUCTTAG = "Produkt Tag";
-    public final static String DESCRIPTION = "Opis";
-    public final static String PRICEUNIT = "Cena jednostki";
-    public final static String IMAGEBASE = "Obraz";
+    class Inputs {
+        public final static String FIRSTNAME = "Imię";
+        public final static String LASTNAME = "Nazwisko";
+        public final static String PASSWORD = "Hasło";
+        public final static String NAME = "Nazwa";
+        public final static String AMOUNT = "Ilość";
+        public final static String PRODUCTTAG = "Produkt Tag";
+        public final static String DESCRIPTION = "Opis";
+        public final static String PRICEUNIT = "Cena jednostki";
+        public final static String IMAGEBASE = "Obraz";
 
-}
+    }
+
+    public static class Company {
+        public static final String NAME = "Świat zwierząt";
+        public static final String STREET = "Ulica 0A";
+        public static final String CITY = "00-000 Miasto";
+        public static final String COUNTRY = "Polska";
+    }
+
+    public static class Document {
+        public final static String INVOICE = "invoice";
+        public final static String LABEL = "label";
+    }
 }
