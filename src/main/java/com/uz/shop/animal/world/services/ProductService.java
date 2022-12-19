@@ -145,11 +145,9 @@ public class ProductService {
         return respones(savedProduct, false);
     }
 
-    public ResponseEntity.BodyBuilder delete(Long id) {
+    public void delete(Long id) {
         Product product = getProductById(id);
 
         productRepository.delete(product);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT);
     }
 }

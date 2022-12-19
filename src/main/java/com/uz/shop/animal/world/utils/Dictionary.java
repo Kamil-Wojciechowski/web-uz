@@ -27,6 +27,10 @@ public class Dictionary {
         public final static String DESCRIPTION = "Opis";
         public final static String PRICEUNIT = "Cena jednostki";
         public final static String IMAGEBASE = "Obraz";
+        public final static String CITY = "Miejscowość";
+        public final static String MOBILENUMBER = "Numer telefonu";
+        public final static String STREET = "Ulica";
+        public final static String POSTALCODE = "Kod pocztowy";
 
     }
 

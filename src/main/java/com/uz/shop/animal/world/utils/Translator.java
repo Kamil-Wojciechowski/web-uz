@@ -33,6 +33,18 @@ public class Translator {
             case "imageBase":
                 sb = new StringBuilder(IMAGEBASE);
                 break;
+            case "city":
+                sb = new StringBuilder(CITY);
+                break;
+            case "mobileNumber":
+                sb = new StringBuilder(MOBILENUMBER);
+                break;
+            case "street":
+                sb = new StringBuilder(STREET);
+                break;
+            case "postalCode":
+                sb = new StringBuilder(POSTALCODE);
+                break;
             default:
                 sb = new StringBuilder(text);
                 break;

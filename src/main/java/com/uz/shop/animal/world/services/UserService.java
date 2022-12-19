@@ -3,7 +3,7 @@ package com.uz.shop.animal.world.services;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.repository.UserRepository;
 import com.uz.shop.animal.world.models.Token;
-import com.uz.shop.animal.world.models.TokenType;
+import com.uz.shop.animal.world.models.enums.TokenType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 
 import javax.validation.Valid;

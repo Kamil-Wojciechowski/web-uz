@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.models;
 
+import com.uz.shop.animal.world.models.enums.UserType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

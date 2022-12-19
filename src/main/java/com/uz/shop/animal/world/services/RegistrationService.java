@@ -1,14 +1,12 @@
 package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.models.User;
-import com.uz.shop.animal.world.models.UserType;
+import com.uz.shop.animal.world.models.enums.UserType;
 import com.uz.shop.animal.world.request.RegistrationRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
-import com.uz.shop.animal.world.utils.Dictionary;
 import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import com.uz.shop.animal.world.validators.EmailValidator;
 import com.uz.shop.animal.world.validators.PasswordValidator;
@@ -19,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.time.LocalDateTime;
