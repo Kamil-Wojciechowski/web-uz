@@ -23,7 +23,7 @@ public class Address {
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonProperty("user_id")
+    @JsonProperty("userId")
     private User user;
 
     @Column(nullable = false)

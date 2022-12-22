@@ -21,18 +21,18 @@ import java.util.List;
 public class AddressController {
 
     @Autowired
-    private AddressService addresssService;
+    private AddressService addressService;
 
     @GetMapping
-    public ResponseEntity<List<Address>> getAddress() { return addresssService.findByUser(); }
+    public ResponseEntity<List<Address>> getAddress() { return addressService.findByUser(); }
 
     @PostMapping
-    public ResponseEntity<ObjectNode> postAddress(@Valid @RequestBody AddressRequest request) { return addresssService.createAddress(request); }
+    public ResponseEntity<ObjectNode> postAddress(@Valid @RequestBody AddressRequest request) { return addressService.createAddress(request); }
 
     @PatchMapping("/{addressId}")
-    public ResponseEntity<ObjectNode> patchAddress(@PathVariable("addressId") Long addressId, @Valid @RequestBody AddressRequest request) { return addresssService.updateAddress(addressId, request); }
+    public ResponseEntity<ObjectNode> patchAddress(@PathVariable("addressId") Long addressId, @Valid @RequestBody AddressRequest request) { return addressService.updateAddress(addressId, request); }
 
     @DeleteMapping("/{addressId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void patchAddress(@PathVariable("addressId") Long addressId) { addresssService.deleteAddress(addressId); }
+    public void patchAddress(@PathVariable("addressId") Long addressId) { addressService.deleteAddress(addressId); }
 }
