@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
     @Query(
-            value = "SELECT * from orders o Where o.address_id IN (Select a.id from address a where a.user_id = ?1)",
+            value = "SELECT * from orders o Where o.address_id IN (Select a.id from addresses a where a.user_id = ?1)",
             nativeQuery = true
     )
     Collection<Order> findByUserId(Long user_id);

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@Entity(name="tokens")
 public class Token {
 
     @Id

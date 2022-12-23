@@ -35,7 +35,7 @@ public class AddressService {
         return ResponseEntity.ok(new ArrayList<>(addressRepository.findByUserEmail(getAuthUser().getEmail())));
     }
 
-    private ResponseEntity<ObjectNode> respones(Address address, Boolean isCreate) {
+    private ResponseEntity<ObjectNode> responses(Address address, Boolean isCreate) {
         ObjectNode tree = mapper.valueToTree(address);
         if(isCreate) {
             return ResponseEntity.status(HttpStatus.CREATED).body(tree);
@@ -50,7 +50,7 @@ public class AddressService {
 
         address = addressRepository.save(address);
 
-        return respones(address, true);
+        return responses(address, true);
     }
 
     private Address findAddressById(Long id) {
@@ -73,7 +73,7 @@ public class AddressService {
 
         address = addressRepository.save(address);
 
-        return respones(address, false);
+        return responses(address, false);
     }
 
     public ResponseEntity.BodyBuilder deleteAddress(Long id) {

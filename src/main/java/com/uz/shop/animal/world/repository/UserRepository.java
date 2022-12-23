@@ -17,11 +17,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying
-    @Query(value = "Update user u SET u.enabled = TRUE where u.email = ?1", nativeQuery = true)
+    @Query(value = "Update users u SET u.enabled = TRUE where u.email = ?1", nativeQuery = true)
     int enableUser(String email);
 
     @Transactional
     @Modifying
-    @Query(value = "Update user u SET u.password = ?1 where u.id = ?2", nativeQuery = true)
+    @Query(value = "Update users u SET u.password = ?1 where u.id = ?2", nativeQuery = true)
     int updatePassword(String password, Long id);
 }

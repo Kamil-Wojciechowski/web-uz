@@ -24,7 +24,7 @@ import static com.uz.shop.animal.world.utils.Dictionary.WRONG_FORMAT_EMAIL;
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
+@Entity(name="users")
 public class User implements UserDetails {
 
     @Id

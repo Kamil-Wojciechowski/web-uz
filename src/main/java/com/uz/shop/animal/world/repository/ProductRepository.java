@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByName(String name);
 
     @Query(
-            value = "SELECT * FROM product p WHERE p.is_visible = 1",
+            value = "SELECT * FROM products p WHERE p.is_visible = 1",
             nativeQuery = true)
     Collection<Product> findAllVisible();
 }

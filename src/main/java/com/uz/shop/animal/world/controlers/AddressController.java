@@ -34,5 +34,5 @@ public class AddressController {
 
     @DeleteMapping("/{addressId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void patchAddress(@PathVariable("addressId") Long addressId) { addressService.deleteAddress(addressId); }
+    public void deleteAddress(@PathVariable("addressId") Long addressId) { addressService.deleteAddress(addressId); }
 }

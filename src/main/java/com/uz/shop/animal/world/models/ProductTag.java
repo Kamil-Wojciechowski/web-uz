@@ -16,7 +16,7 @@ import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
 
 @Getter
 @Setter
-@Entity
+@Entity(name="product_tags")
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductTag {
