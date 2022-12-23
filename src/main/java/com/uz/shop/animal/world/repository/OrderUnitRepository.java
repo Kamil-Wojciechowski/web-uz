@@ -1,15 +1,16 @@
 package com.uz.shop.animal.world.repository;
 
 import com.uz.shop.animal.world.models.Order;
+import com.uz.shop.animal.world.models.OrderUnit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 
-public interface OrderRepository extends JpaRepository<Order,Long> {
+public interface OrderUnitRepository extends JpaRepository<OrderUnit, Long> {
     @Query(
-            value = "SELECT * from orders o Where o.address_id IN (Select a.id from addresses a where a.user_id = ?1)",
+            value = "SELECT * from order_units ou Where ou.order_id = ?1",
             nativeQuery = true
     )
-    Collection<Order> findByUserId(Long user_id);
+    Collection<OrderUnit> findByOrderId(Long order_id);
 }
