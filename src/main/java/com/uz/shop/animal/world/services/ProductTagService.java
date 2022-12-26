@@ -67,6 +67,12 @@ public class ProductTagService {
         return ResponseEntity.ok(tree);
     }
 
+    public ResponseEntity<ObjectNode> getProductTagById(Integer id) {
+        ProductTag productTag = getProductTag(id);
+
+        return updateResponse(productTag);
+    }
+
     public ResponseEntity<ObjectNode> update(Integer id, ProductTagRequest request) {
         ProductTag productTag = getProductTag(id);
 

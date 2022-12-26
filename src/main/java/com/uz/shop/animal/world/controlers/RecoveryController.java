@@ -21,6 +21,12 @@ public class RecoveryController {
         return recoveryService.recovery(email);
     }
 
+    @GetMapping("/token/{token}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void getToken(@PathVariable("token") String token) {
+        recoveryService.getToken(token);
+    }
+
     @PostMapping("/token/{token}")
     public ResponseEntity<ObjectNode> confirm(@PathVariable("token") String token, @Valid @RequestBody RecoveryRequest recoveryRequest) {
         return recoveryService.confirmToken(token, recoveryRequest);

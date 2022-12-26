@@ -59,6 +59,12 @@ public class AddressService {
         );
     }
 
+    public ResponseEntity<ObjectNode> getAddressById(Long id) {
+        Address address = findAddressById(id);
+
+        return responses(address, false);
+    }
+
     public ResponseEntity<ObjectNode> updateAddress(Long id, AddressRequest request) {
         Address address = findAddressById(id);
 

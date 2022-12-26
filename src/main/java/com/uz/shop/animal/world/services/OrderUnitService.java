@@ -79,6 +79,14 @@ public class OrderUnitService {
         return responses(orderUnit, true);
     }
 
+    public ResponseEntity<ObjectNode> getByOrderUnitId(Long orderId, Long orderUnitId) {
+        findOrder(orderId);
+
+        OrderUnit orderUnit = findOrderUnit(orderUnitId);
+
+        return responses(orderUnit, false);
+    }
+
     public ResponseEntity<ObjectNode> updateOrderUnit(Long orderId, Long orderUnitId, OrderUnitRequest request) {
         Order order = findOrder(orderId);
 

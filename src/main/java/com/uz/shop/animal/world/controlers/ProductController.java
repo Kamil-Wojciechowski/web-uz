@@ -39,6 +39,11 @@ public class ProductController {
     public ResponseEntity<ObjectNode> patchProduct(@PathVariable("productId") Long productId,@Valid @RequestBody ProductRequest request)  {
         return productService.update(productId, request);
     }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ObjectNode> getProduct(@PathVariable("productId") Long productId)  {
+        return productService.getProductById(productId);
+    }
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{productId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

@@ -21,6 +21,7 @@ public class RegistrationController {
     public ResponseEntity<ObjectNode> register(@Valid @RequestBody RegistrationRequest request) {
         return registrationService.register(request);
     }
+
     @PostMapping("/{token}")
     public ResponseEntity<ObjectNode> confirm(@PathVariable("token") String token) {
         return registrationService.confirmToken(token);

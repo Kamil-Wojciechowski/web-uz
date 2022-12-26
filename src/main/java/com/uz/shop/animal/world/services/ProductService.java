@@ -85,7 +85,7 @@ public class ProductService {
         return respones(savedProduct, true);
     }
 
-    private Product getProductById(Long id) {
+    private Product getProduct(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() ->
                         new RestClientResponseException(ITEM_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null)
@@ -135,8 +135,14 @@ public class ProductService {
         });
     }
 
+    public ResponseEntity<ObjectNode> getProductById(Long productId) {
+        Product product = getProduct(productId);
+
+        return respones(product, false);
+    }
+
     public ResponseEntity<ObjectNode> update(Long productId, ProductRequest request) {
-        Product product = getProductById(productId);
+        Product product = getProduct(productId);
 
         setProduct(request, product);
 
@@ -146,7 +152,7 @@ public class ProductService {
     }
 
     public void delete(Long id) {
-        Product product = getProductById(id);
+        Product product = getProduct(id);
 
         productRepository.delete(product);
     }

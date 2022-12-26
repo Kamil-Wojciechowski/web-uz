@@ -2,6 +2,7 @@ package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.uz.shop.animal.world.models.Product;
 import com.uz.shop.animal.world.request.RecoveryRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
 import com.uz.shop.animal.world.models.User;
@@ -85,5 +86,18 @@ public class RecoveryService {
         objectNode.put("message", PASSWORD_CHANGED_SUCCESSFULLY);
         objectNode.put("successful", true);
         return ResponseEntity.ok(objectNode);
+    }
+
+
+    public void getToken(String token) {
+        Token tokenItem = tokenService.getToken(token)
+                .orElseThrow(() -> new RestClientResponseException(TOKEN_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null));
+
+        LocalDateTime expiredAt = tokenItem.getExpiresAt();
+
+        if(expiredAt.isBefore(LocalDateTime.now())) {
+            tokenService.deleteToken(tokenItem);
+            throw new RestClientResponseException(TOKEN_EXPIRED, 400, HttpStatus.BAD_REQUEST.name(), null, null, null);
+        }
     }
 }

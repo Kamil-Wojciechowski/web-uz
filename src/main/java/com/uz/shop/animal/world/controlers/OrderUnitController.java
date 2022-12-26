@@ -34,6 +34,8 @@ public class OrderUnitController {
     @PatchMapping("/{orderUnitId}")
     public ResponseEntity<ObjectNode> patchOrder(@PathVariable("orderId") Long orderId, @PathVariable("orderUnitId") Long orderUnitId, @Valid @RequestBody OrderUnitRequest request) { return orderUnitService.updateOrderUnit(orderId, orderUnitId, request); }
 
+    @GetMapping("/{orderUnitId}")
+    public ResponseEntity<ObjectNode> getOrderUnit(@PathVariable("orderId") Long orderId, @PathVariable("orderUnitId") Long orderUnitId) { return orderUnitService.getByOrderUnitId(orderId, orderUnitId); }
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{orderUnitId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

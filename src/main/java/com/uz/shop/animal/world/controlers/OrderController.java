@@ -24,7 +24,7 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<Order>> getOrder(){return orderService.getAll();}
+    public ResponseEntity<List<Order>> getOrders(){return orderService.getAll();}
 
     @PostMapping
     public ResponseEntity<ObjectNode> postOrder(@Valid @RequestBody OrderRequest request) { return orderService.createOrder(request); }
@@ -32,6 +32,10 @@ public class OrderController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PatchMapping("/{orderId}")
     public ResponseEntity<ObjectNode> patchOrder(@PathVariable("orderId") Long orderId, @Valid @RequestBody OrderRequest request) { return orderService.updateOrder(orderId, request); }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<ObjectNode> getOrder(@PathVariable("orderId") Long orderId){return orderService.getOrderById(orderId);}
+
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{orderId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

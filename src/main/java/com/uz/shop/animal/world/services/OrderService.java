@@ -50,6 +50,11 @@ public class OrderService {
             return ResponseEntity.ok(tree);
         }
     }
+
+    private Order findOrderById(Long id) {
+        return  orderRepository.findById(id).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));
+    }
     public ResponseEntity<ObjectNode> createOrder(OrderRequest request) {
 
         Address address = addressRepository.findById(request.getAddress()).orElseThrow(()->
@@ -62,10 +67,14 @@ public class OrderService {
         return responses(order, true);
     }
 
+    public ResponseEntity<ObjectNode> getOrderById(Long id) {
+        Order order = findOrderById(id);
+
+        return responses(order, false);
+    }
+
    public ResponseEntity<ObjectNode> updateOrder(Long id, OrderRequest request) {
-        Order order = orderRepository.findById(id).orElseThrow(()->
-                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));
-       ;
+        Order order = findOrderById(id);
 
         order.setOrderStatus(request.getStatus());
 

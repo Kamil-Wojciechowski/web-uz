@@ -39,6 +39,11 @@ public class ProductTagController {
         return productTagService.update(productTagId, request);
     }
 
+    @GetMapping("/{productTagId}")
+    public ResponseEntity<ObjectNode> getProductTagById(@PathVariable("productTagId") Integer productTagId) {
+        return productTagService.getProductTagById(productTagId);
+    }
+
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{productTagId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

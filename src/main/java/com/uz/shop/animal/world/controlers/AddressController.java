@@ -29,6 +29,9 @@ public class AddressController {
     @PostMapping
     public ResponseEntity<ObjectNode> postAddress(@Valid @RequestBody AddressRequest request) { return addressService.createAddress(request); }
 
+    @GetMapping("/{addressId}")
+    public ResponseEntity<ObjectNode> getAddress(@PathVariable Long addressId) { return addressService.getAddressById(addressId); }
+
     @PatchMapping("/{addressId}")
     public ResponseEntity<ObjectNode> patchAddress(@PathVariable("addressId") Long addressId, @Valid @RequestBody AddressRequest request) { return addressService.updateAddress(addressId, request); }
 
