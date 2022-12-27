@@ -16,6 +16,7 @@ public class Dictionary {
     public final static String PRODUCT_PARENT_NOT_FOUND = "parentId : Produkt nie istnieje";
     public final static String TAG_NOT_FOUND = "Tag : Taki tag nie istnieje";
     public final static String ITEM_NOT_FOUND = "Nie znaleziono elementu o podanym Id";
+    public final static String UNAUTHORIZED = "Brak dostępu";
 
     class Inputs {
         public final static String FIRSTNAME = "Imię";
@@ -38,7 +39,6 @@ public class Dictionary {
         public static final String NAME = "Świat zwierząt";
         public static final String STREET = "Ulica 0A";
         public static final String CITY = "00-000 Miasto";
-        public static final String COUNTRY = "Polska";
     }
 
     public static class Document {

@@ -4,24 +4,24 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.uz.shop.animal.world.services.pdf.fake_objects.Customer;
-import com.uz.shop.animal.world.services.pdf.fake_objects.Product;
+import com.uz.shop.animal.world.models.Order;
+import com.uz.shop.animal.world.models.OrderUnit;
+import com.uz.shop.animal.world.models.Product;
 import com.uz.shop.animal.world.utils.Dictionary;
+import lombok.AllArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
+@AllArgsConstructor
 public class InvoiceGenerator extends BaseGenerator {
-    private int idOrder;
+    private Order order;
 
-    public InvoiceGenerator(int idOrder) {
-        this.idOrder = idOrder;
-    }
+    private Collection<OrderUnit> units;
 
     @Override
     protected Rectangle getPageSize() {
@@ -64,7 +64,7 @@ public class InvoiceGenerator extends BaseGenerator {
         String currentDateFormatted = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
 
         StringBuilder content = new StringBuilder();
-        content.append("Faktura FV-").append(this.idOrder);
+        content.append("Faktura FV-").append(this.order.getId());
         PdfPCell cellInvoiceNumber = this.creator.getCell(content.toString());
 
         content.setLength(0);
@@ -92,9 +92,7 @@ public class InvoiceGenerator extends BaseGenerator {
         table.addCell(this.creator.getBlankCell());
         table.addCell(this.creator.getCompanyData("Sprzedawca"));
         table.addCell(this.creator.getBlankCell());
-        // TODO: PDF - Dodać informacje o kliencie z idOrder'a
-        Customer customer = new Customer("X", "Y", "Ulica 1A", "00-000 Miasto", "Polska");
-        table.addCell(this.creator.getCustomerData("Nabywca", customer));
+        table.addCell(this.creator.getCustomerData("Nabywca", order.getAddress()));
         table.addCell(this.creator.getBlankCell());
 
         return table;
@@ -118,13 +116,11 @@ public class InvoiceGenerator extends BaseGenerator {
         float sumTax = 0;
         float sumGross = 0;
 
-        // TODO: PDF - Pobrać produkty z idOrder
-        List<Product> products = new ArrayList<Product>();
-        products.add(new Product("Produkt 1", 100));
-        products.add(new Product("Produkt 2", 1337));
+        for (OrderUnit unit : this.units) {
+            Product product = unit.getProduct();
 
-        for (Product product : products) {
-            float nett = product.price;
+
+            float nett = (float) (product.getPriceUnit() * 1f);
             float tax = nett * 0.23f;
             float gross = nett + tax;
 
@@ -132,9 +128,8 @@ public class InvoiceGenerator extends BaseGenerator {
             sumTax += tax;
             sumGross += gross;
 
-            table.addCell(this.creator.getCell(product.name));
-            // TODO: PDF - Zmienić ilość produktów, jak już zostaną pobrane z ordera
-            table.addCell(this.creator.getCell("1", Element.ALIGN_CENTER));
+            table.addCell(this.creator.getCell(product.getName()));
+            table.addCell(this.creator.getCell(String.valueOf(unit.getAmount()), Element.ALIGN_CENTER));
             table.addCell(this.creator.getCell(decimalFormat.format(nett), Element.ALIGN_RIGHT));
             table.addCell(this.creator.getCell(decimalFormat.format(tax), Element.ALIGN_RIGHT));
             table.addCell(this.creator.getCell(decimalFormat.format(gross), Element.ALIGN_RIGHT));
@@ -142,7 +137,7 @@ public class InvoiceGenerator extends BaseGenerator {
 
         int[] borderSum = new int[] {2, 0, 0, 0};
         table.addCell(this.creator.getCell(this.creator.getParagraph("Razem", true), borderSum));
-        table.addCell(this.creator.getCell(this.creator.getParagraph(String.valueOf(products.size()), true), borderSum, Element.ALIGN_CENTER));
+        table.addCell(this.creator.getCell(this.creator.getParagraph(String.valueOf(units.size()), true), borderSum, Element.ALIGN_CENTER));
         table.addCell(this.creator.getCell(this.creator.getParagraph(decimalFormat.format(sumNett), true), borderSum, Element.ALIGN_RIGHT));
         table.addCell(this.creator.getCell(this.creator.getParagraph(decimalFormat.format(sumTax), true), borderSum, Element.ALIGN_RIGHT));
         table.addCell(this.creator.getCell(this.creator.getParagraph(decimalFormat.format(sumGross), true), borderSum, Element.ALIGN_RIGHT));

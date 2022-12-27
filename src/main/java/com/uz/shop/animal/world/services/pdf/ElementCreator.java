@@ -5,7 +5,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
-import com.uz.shop.animal.world.services.pdf.fake_objects.Customer;
+import com.uz.shop.animal.world.models.Address;
 import com.uz.shop.animal.world.utils.Dictionary;
 
 public class ElementCreator {
@@ -98,20 +98,17 @@ public class ElementCreator {
         cell.addElement(this.getParagraph(Dictionary.Company.NAME));
         cell.addElement(this.getParagraph(Dictionary.Company.STREET));
         cell.addElement(this.getParagraph(Dictionary.Company.CITY));
-        cell.addElement(this.getParagraph(Dictionary.Company.COUNTRY));
 
         cell.setBorder(0);
         return cell;
     }
 
-    // TODO: PDF - zmienić obiekt customer na prawillny
-    public PdfPCell getCustomerData(String label, Customer customer) {
+    public PdfPCell getCustomerData(String label, Address address) {
         PdfPCell cell = new PdfPCell();
         cell.addElement(this.getParagraph(label, true));
-        cell.addElement(this.getParagraph(customer.name + " " + customer.surname));
-        cell.addElement(this.getParagraph(customer.street));
-        cell.addElement(this.getParagraph(customer.city));
-        cell.addElement(this.getParagraph(customer.country));
+        cell.addElement(this.getParagraph(address.getFirstname() + " " + address.getLastname()));
+        cell.addElement(this.getParagraph(address.getStreet()));
+        cell.addElement(this.getParagraph(address.getCity()));
 
         cell.setBorder(0);
         return cell;

@@ -12,4 +12,10 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             nativeQuery = true
     )
     Collection<Order> findByUserId(Long user_id);
+
+    @Query(
+            value = "SELECT * FROM orders WHERE id = ?1",
+            nativeQuery = true
+    )
+    Order findOrderById(long id_order);
 }

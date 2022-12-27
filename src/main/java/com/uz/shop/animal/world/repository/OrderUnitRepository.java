@@ -1,6 +1,5 @@
 package com.uz.shop.animal.world.repository;
 
-import com.uz.shop.animal.world.models.Order;
 import com.uz.shop.animal.world.models.OrderUnit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
