@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.services;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.repository.UserRepository;
 import com.uz.shop.animal.world.models.Token;
@@ -7,6 +8,8 @@ import com.uz.shop.animal.world.models.enums.TokenType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -111,5 +114,9 @@ public class UserService implements UserDetailsService {
 
     public int enableUser(String email) {
        return userRepository.enableUser(email);
+    }
+
+    public User getUserByAuth() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

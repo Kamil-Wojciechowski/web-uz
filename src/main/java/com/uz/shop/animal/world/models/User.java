@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.uz.shop.animal.world.models.enums.UserType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,6 +51,7 @@ public class User implements UserDetails {
 
     @NotEmpty
     @Size(min=8)
+    @JsonIgnore
     private String password;
 
     @CreationTimestamp
