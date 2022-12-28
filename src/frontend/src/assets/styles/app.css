@@ -33,4 +33,9 @@ nav img {
   margin-left: 1vh !important;
   margin-right: 1vh !important;
 }
+
+.cards {
+  width: 80vh;
+  margin: 1vh auto;
+}
 /*# sourceMappingURL=app.css.map */
