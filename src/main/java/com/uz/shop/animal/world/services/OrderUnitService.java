@@ -22,6 +22,7 @@ import java.util.List;
 
 import static com.uz.shop.animal.world.utils.Dictionary.ITEM_NOT_FOUND;
 
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
 @AllArgsConstructor
 public class OrderUnitService {
@@ -35,30 +36,35 @@ public class OrderUnitService {
 
     private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
+    //Pobieranie zamówienia po ID
     private Order findOrder(Long id) {
         return orderRepository.findById(id).orElseThrow(()->
                 new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name() + " Order", null, null, null)
         );
     }
 
+    //Pobieranie lini zamówienia po ID
     private OrderUnit findOrderUnit(Long id) {
         return orderUnitRepository.findById(id).orElseThrow(()->
                 new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name() + " Order Unit", null, null, null)
         );
     }
 
+    //Pobieranie produktu po ID
     private Product findProduct(Long id) {
         return productRepository.findById(id).orElseThrow(()->
                 new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name() + " Product", null, null, null)
         );
     }
 
+    //Pobieranie listy lini zamówiwień
     public ResponseEntity<List<OrderUnit>> getAll(Long orderId){
         Order order = findOrder(orderId);
 
         return ResponseEntity.ok(new ArrayList<>(orderUnitRepository.findByOrderId(order.getId())));
     }
 
+    //Przygotowanie odpowiedzi z serwera na Create oraz Update
     private ResponseEntity<ObjectNode> responses(OrderUnit orderUnit, Boolean isCreate) {
         ObjectNode tree = mapper.valueToTree(orderUnit);
         if(isCreate) {
@@ -67,6 +73,11 @@ public class OrderUnitService {
             return ResponseEntity.ok(tree);
         }
     }
+
+    /*
+    Tworzenie Lini Zamówienia
+    Pobierany jest order, produkt, tworzony jest orderUnit, a następnie zapisywany.
+     */
     public ResponseEntity<ObjectNode> createOrderUnit(Long orderId, OrderUnitRequest request) {
         Order order = findOrder(orderId);
 
@@ -79,6 +90,9 @@ public class OrderUnitService {
         return responses(orderUnit, true);
     }
 
+    /*
+    Pobieranie Lini zamówień po ID
+     */
     public ResponseEntity<ObjectNode> getByOrderUnitId(Long orderId, Long orderUnitId) {
         findOrder(orderId);
 
@@ -87,6 +101,12 @@ public class OrderUnitService {
         return responses(orderUnit, false);
     }
 
+
+    /*
+    Aktualizacja Lini zamówień
+    Wyszukiwane jest zamówienie, linia zamówienia, produkt.
+    Następnie odpowiednio ustawiane w lini zamówienia oraz zapisywany.
+     */
     public ResponseEntity<ObjectNode> updateOrderUnit(Long orderId, Long orderUnitId, OrderUnitRequest request) {
         Order order = findOrder(orderId);
 
@@ -103,6 +123,11 @@ public class OrderUnitService {
         return responses(orderUnit, false);
     }
 
+    /*
+    Usuwanie Lini zamówień
+    Zamówienie oraz linia zamówienia sprawdzana jest, czy istnieje.
+    Linia zamówienia zostaje usunięta.
+     */
     public ResponseEntity.BodyBuilder deleteOrderUnit(Long orderId, Long UnitOrderId) {
         findOrder(orderId);
 

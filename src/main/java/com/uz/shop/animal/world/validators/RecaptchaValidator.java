@@ -13,15 +13,19 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
+
+//Walidator sprawdzający, czy captcha przesłana z frontendu jest poprawna.
 @Service
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class RecaptchaValidator implements Predicate<String> {
     private static final String URL = "https://www.google.com/recaptcha/api/siteverify";
 
+    //Sekretny token Google
     @Value("${recaptcha.secret}")
     private String SECRET_KEY;
 
+    //Test recaptchy, budowany jest request do serwerów google, a następnie sprawdzany jest response czy jest success
     @Override
     public boolean test(String recaptchaToken) {
         try {

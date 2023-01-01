@@ -11,21 +11,29 @@ import org.hibernate.annotations.UpdateTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Model Adresu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery oraz bezargumentowy konstruktor
+ * Tag Entity powoduje utworzenie elementu w bazie danych
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity(name="addresses")
 public class Address {
+    // Tag ID oraz GeneratedValue oznacza, że kolumna jest Primary Key oraz wartość jest generowana
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    //Tagi poniżej pozwalają utworzyć relacje w bazie danych
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JsonProperty("userId")
     private User user;
 
+    //Tagi oznaczają, że kolumna nie może być pusta w bazie danych oraz odpowiednik klucza w REST jest "firstname"
     @Column(nullable = false)
     @JsonProperty("firstname")
     private String firstname;
@@ -58,6 +66,7 @@ public class Address {
     @JsonProperty("city")
     private String city;
 
+    //Flagi odpowiadają za automatyczne tworzenie czasu utworzenia oraz aktualizacji
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

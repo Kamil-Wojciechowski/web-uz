@@ -11,12 +11,17 @@ import javax.validation.constraints.Size;
 import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
 
 
+/**
+ * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressRequest {
 
+    //Size odpowiada za sprawdzenie długości elementu
     @Size(min = 2, message = INVALID_INPUT)
     @JsonProperty("firstname")
     private String firstname;

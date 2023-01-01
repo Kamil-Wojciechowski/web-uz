@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -11,12 +11,18 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+
+//Serwis odpowiadający za wysyłanie maili
 @Service
 @AllArgsConstructor
 public class EmailService implements EmailSender{
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
     private final JavaMailSender mailSender;
 
+
+    //logujemy że email jest wysyłany
+    // Tworzymy wiadomość ustawiamy odpowiednie parametry
+    // Wysyłamy
     @Override
     @Async
     public void send(String email, String body) {

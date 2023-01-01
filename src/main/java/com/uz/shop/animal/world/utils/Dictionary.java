@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.utils;
 
+//Polski słownik, który jest wykorzystywany w aplikacji
 public class Dictionary {
     public static final String RECOVERY_EMAIL = "Sprawdź swoją skrzynkę mailową.";
     public static final String TOKEN_NOT_FOUND = "Nie znaleziono tokenu.";

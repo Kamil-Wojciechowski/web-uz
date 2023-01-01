@@ -24,10 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Kontroler odpowiadający za zbieranie błędów w aplikacji
+ */
 @ControllerAdvice
 public class CustomErrorHandler extends ResponseEntityExceptionHandler {
 
     private static ObjectNode objectNode = new ObjectMapper().createObjectNode();
+    /*
+    Metoda ta zbiera dane nt. ConstraintViolationExcepiton,
+    Zbiera ona wszystkie błędy, a następnie tworzy element ApiError
+    Na samym końcu zwraca ResponseEntity z wszystkimi informacjami
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException exception, WebRequest request){
         List<String> errors = new ArrayList<>();
@@ -42,6 +50,10 @@ public class CustomErrorHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
+    /*
+    Metoda ta zbiera dane nt. RestClientResponseException
+    Przygotowuje ona elementy z błędu, a następnie zwraca je użytkownikowi
+    */
     @ExceptionHandler(RestClientResponseException.class)
     public ResponseEntity<Object> handleRestClientResponseException(RestClientResponseException exception, WebRequest request) {
         ArrayNode arrayNode = objectNode.putArray("errors");
@@ -51,6 +63,10 @@ public class CustomErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(exception.getRawStatusCode()).body(objectNode);
     }
 
+    /*
+    Nadpisujemy tutaj metode nt. błędnych argumentów
+    Budujemy response oraz zwracamy jako bad request (400) użytkownikowi
+     */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         List<FieldError> errorList = ex

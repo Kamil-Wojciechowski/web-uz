@@ -10,16 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * Repoozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ */
 @Repository
 @Transactional(readOnly = true)
 public interface UserRepository extends JpaRepository<User, Long> {
+   //Znalezienie użytkownika przez mail
     Optional<User> findByEmail(String email);
 
+    //Aktualizacja użytkownika na aktywny przez mail
     @Transactional
     @Modifying
     @Query(value = "Update users u SET u.enabled = TRUE where u.email = ?1", nativeQuery = true)
     int enableUser(String email);
 
+    //Zmiana hasła przez ID
     @Transactional
     @Modifying
     @Query(value = "Update users u SET u.password = ?1 where u.id = ?2", nativeQuery = true)

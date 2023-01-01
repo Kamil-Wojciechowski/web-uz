@@ -9,14 +9,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
+/*
+Kontrolery służą do zarządzania ścieżkami zapytań oraz interakcją między zapytaniem a przebiegiem zapytania biznesowego
+*/
 @RestController
 @RequestMapping(path = "api/v1/register")
 @AllArgsConstructor
 public class RegistrationController {
 
     private final RegistrationService registrationService;
-
+    /*
+    GetMapping - Request GET - Zbieranie informacji - 200
+    PostMapping - Request POST - Tworzenie elementów - 201 / 400
+    PatchMapping - Request Patch - Aktualizacja elementów - 200 / 400 / 404
+    DeleteMapping - Request Delete - Usunięcie elementów - 204 / 404
+     */
     @PostMapping
     public ResponseEntity<ObjectNode> register(@Valid @RequestBody RegistrationRequest request) {
         return registrationService.register(request);

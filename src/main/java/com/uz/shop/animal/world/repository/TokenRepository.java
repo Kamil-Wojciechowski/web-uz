@@ -10,11 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+/**
+ * Repoozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ */
 @Repository
 @Transactional(readOnly = true)
 public interface TokenRepository extends JpaRepository<Token, Long> {
+    //Token przez token
     Optional<Token> findByToken(String token);
 
+    //Aktualizacja tokenu po tokenie oraz zaakcpetowania
     @Transactional
     @Modifying
     @Query(value = "Update tokens t SET t.confirmed_at = ?2 WHERE t.token = ?1", nativeQuery = true)

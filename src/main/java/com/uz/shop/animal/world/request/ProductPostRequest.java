@@ -10,6 +10,10 @@ import javax.validation.constraints.*;
 
 import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
 
+/**
+ * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,10 +22,12 @@ public class ProductPostRequest {
 
     private static final Integer LENGTH_NAME_MIN = 2;
 
+    //Minimalna długość elementu musi wynosić 1
     @Min(value = 1, message = INVALID_INPUT)
     @JsonProperty("productTag")
     private Integer productTag;
 
+    //Element nie może być pusty
     @NotEmpty(message = INVALID_INPUT)
     @JsonProperty("name")
     private String name;
