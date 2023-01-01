@@ -42,16 +42,23 @@ public class ProductService {
     /*
     Pobieranie produktów.
     Jeśli użytkownik zalogowany jest admin pobierane są wszystkie elementy.
-    W innym przypadku zwracane są tylko elementy ustawionę jako widoczne.
+    W innym przypadku zwracane są tylko elementy ustawione jako widoczne.
      */
     public ResponseEntity<List<Product>> findAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<Product> products;
 
         if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return ResponseEntity.ok(productRepository.findAll());
+            products = productRepository.findAll();
+        } else {
+            products = new ArrayList<>(productRepository.findAllVisible());
         }
 
-        return ResponseEntity.ok(new ArrayList<>(productRepository.findAllVisible()));
+        for(Product product : products) {
+            product.setAvailable(product.getAmount() - product.getAmountBought());
+        }
+
+        return ResponseEntity.ok(products);
     }
 
     // Odpowiedzi Created oraz Update
@@ -66,7 +73,7 @@ public class ProductService {
 
     /*
     Tworzenie produktu
-    Produkt jest walidowany jeśli chodzi o nazwę oraz produkt tag.
+    Produkt jest walidowany, jeśli chodzi o nazwę oraz produkt tag.
     Zapisywany jest w bazie, a następnie zwracana jest odpowiedź z serwera.
      */
     public ResponseEntity<ObjectNode> create(ProductPostRequest request) {
@@ -89,6 +96,7 @@ public class ProductService {
                 request.getName(),
                 request.getDescription(),
                 request.getAmount(),
+                0,
                 request.getPriceUnit(),
                 request.getImageBase(),
                 request.getVideoUrl(),

@@ -48,6 +48,14 @@ public class Product {
     private Integer amount;
 
     @Column(nullable = false)
+    @JsonProperty("amountBought")
+    private Integer amountBought;
+
+    @Transient
+    @JsonProperty("available")
+    private Integer available;
+
+    @Column(nullable = false)
     @JsonProperty("priceUnit")
     private Double priceUnit;
 
@@ -68,7 +76,7 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Product(ProductTag productTag, String name, String description, Integer amount, Double priceUnit, String imageBase, String videoUrl, Boolean isVisible) {
+    public Product(ProductTag productTag, String name, String description, Integer amount, Integer amountBought, Double priceUnit, String imageBase, String videoUrl, Boolean isVisible) {
         this.productTag = productTag;
         this.name = name;
         this.description = description;
@@ -76,6 +84,7 @@ public class Product {
         this.priceUnit = priceUnit;
         this.imageBase = imageBase;
         this.videoUrl = videoUrl;
+        this.amountBought = amountBought;
         this.isVisible = isVisible;
     }
 }

@@ -8,6 +8,7 @@ import com.uz.shop.animal.world.repository.OrderUnitRepository;
 import com.uz.shop.animal.world.repository.ProductRepository;
 import com.uz.shop.animal.world.request.OrderRequest;
 import com.uz.shop.animal.world.request.OrderUnitRequest;
+import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,8 @@ import org.springframework.web.client.RestClientResponseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.uz.shop.animal.world.utils.Dictionary.ITEM_NOT_FOUND;
+import static com.uz.shop.animal.world.utils.Dictionary.*;
+import static com.uz.shop.animal.world.utils.ErrorResponseCreator.buildBadRequest;
 
 //Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
@@ -74,8 +76,16 @@ public class OrderUnitService {
         }
     }
 
+
+    // Walidacja możliwych produktów do kupienia
+    private void validateAmountBought(Integer productAmount, Integer bought) {
+        if(productAmount < bought) {
+            throw new RestClientResponseException(ITEM_COUNT_NOT_ENOUGH, 400, HttpStatus.BAD_REQUEST.name() + " Product", null, null, null);
+        }
+    }
     /*
     Tworzenie Lini Zamówienia
+    Sprawdzany jest produkt czy jest widoczny oraz czy ilość do zakupienia jest możlwia.
     Pobierany jest order, produkt, tworzony jest orderUnit, a następnie zapisywany.
      */
     public ResponseEntity<ObjectNode> createOrderUnit(Long orderId, OrderUnitRequest request) {
@@ -83,9 +93,19 @@ public class OrderUnitService {
 
         Product product = findProduct(request.getProductId());
 
+        if(!product.getIsVisible()) {
+            return buildBadRequest(ITEM_NOT_AVALIABLE, "Error");
+        }
+
+        validateAmountBought((product.getAmount() - product.getAmountBought()), request.getAmount());
+
         OrderUnit orderUnit = new OrderUnit(product, order, request.getAmount());
 
         orderUnit = orderUnitRepository.save(orderUnit);
+
+        product.setAmountBought(product.getAmountBought() + request.getAmount());
+
+        productRepository.save(product);
 
         return responses(orderUnit, true);
     }
@@ -105,6 +125,7 @@ public class OrderUnitService {
     /*
     Aktualizacja Lini zamówień
     Wyszukiwane jest zamówienie, linia zamówienia, produkt.
+    Produkt jest sprawdzany, czy jest widoczny dla kupujących oraz, czy jego ilość jest wystarczająca do zakupu.
     Następnie odpowiednio ustawiane w lini zamówienia oraz zapisywany.
      */
     public ResponseEntity<ObjectNode> updateOrderUnit(Long orderId, Long orderUnitId, OrderUnitRequest request) {
@@ -114,9 +135,22 @@ public class OrderUnitService {
 
         Product product = findProduct(request.getProductId());
 
+        if(!product.getIsVisible()) {
+            return buildBadRequest(ITEM_NOT_AVALIABLE, "Error");
+        }
+
+        Integer previousOrderAmount = orderUnit.getAmount();
+        Integer alreadyBoughtExceptCurrentOrder = (product.getAmountBought() - previousOrderAmount);
+
+        validateAmountBought((product.getAmount() - alreadyBoughtExceptCurrentOrder), request.getAmount());
+
         orderUnit.setOrder(order);
         orderUnit.setProduct(product);
         orderUnit.setAmount(request.getAmount());
+
+        product.setAmountBought( alreadyBoughtExceptCurrentOrder + request.getAmount());
+
+        productRepository.save(product);
 
         orderUnit = orderUnitRepository.save(orderUnit);
 
@@ -132,6 +166,10 @@ public class OrderUnitService {
         findOrder(orderId);
 
         OrderUnit orderUnit = findOrderUnit(UnitOrderId);
+
+        Product product = findProduct(orderUnit.getId());
+        product.setAmountBought(product.getAmountBought() - orderUnit.getAmount());
+        productRepository.save(product);
 
         orderUnitRepository.delete(orderUnit);
 
