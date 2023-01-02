@@ -19,6 +19,7 @@ import java.util.List;
 
 import static com.uz.shop.animal.world.utils.Dictionary.ITEM_NOT_FOUND;
 
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
 @AllArgsConstructor
 public class AddressService {
@@ -31,10 +32,13 @@ public class AddressService {
     private User getAuthUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
+
+    //Adresy po adresie email
     public ResponseEntity<List<Address>> findByUser() {
         return ResponseEntity.ok(new ArrayList<>(addressRepository.findByUserEmail(getAuthUser().getEmail())));
     }
 
+    //Odpowiedzi z serwera dla Create oraz Update
     private ResponseEntity<ObjectNode> responses(Address address, Boolean isCreate) {
         ObjectNode tree = mapper.valueToTree(address);
         if(isCreate) {
@@ -43,6 +47,12 @@ public class AddressService {
             return ResponseEntity.ok(tree);
         }
     }
+
+    /*
+    Tworzenie adresu.
+    Pobierany jest zalogowany użytkownik.
+    Zapisywany jest nowy adres oraz tworzony w bazie.
+     */
     public ResponseEntity<ObjectNode> createAddress(AddressRequest request) {
         User user = getAuthUser();
 
@@ -53,18 +63,29 @@ public class AddressService {
         return responses(address, true);
     }
 
+        /*
+            Wyszukanie adresu przez ID
+         */
     private Address findAddressById(Long id) {
         return addressRepository.findById(id).orElseThrow(() ->
                 new RestClientResponseException(ITEM_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null)
         );
     }
 
+    /*
+    Zwracanie adresu przez ID
+     */
     public ResponseEntity<ObjectNode> getAddressById(Long id) {
         Address address = findAddressById(id);
 
         return responses(address, false);
     }
 
+
+    /*
+    Aktualizacja Adresu
+    Pobierane zostają wszystkie elementy oraz podstawiane do obiektu, a następnie zapisywane w bazie.
+     */
     public ResponseEntity<ObjectNode> updateAddress(Long id, AddressRequest request) {
         Address address = findAddressById(id);
 
@@ -82,6 +103,10 @@ public class AddressService {
         return responses(address, false);
     }
 
+    /*
+    Usuwanie adresu
+    Adres jest wyszukiwany w adresie
+     */
     public ResponseEntity.BodyBuilder deleteAddress(Long id) {
         Address address = findAddressById(id);
 

@@ -2,6 +2,7 @@ package com.uz.shop.animal.world.utils;
 import static com.uz.shop.animal.world.utils.Dictionary.*;
 import static com.uz.shop.animal.world.utils.Dictionary.Inputs.*;
 
+//Klasa mająca na celu przetłumaczenie kluczy przy błedzie
 public class Translator {
     public static String translate(String text) {
         StringBuilder sb = new StringBuilder();

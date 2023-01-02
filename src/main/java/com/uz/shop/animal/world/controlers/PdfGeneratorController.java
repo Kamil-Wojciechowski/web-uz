@@ -16,13 +16,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+/*
+Kontrolery służą do zarządzania ścieżkami zapytań oraz interakcją między zapytaniem a przebiegiem zapytania biznesowego
+*/
 @RequestMapping("/api/v1/pdf")
 @RestController
 public class PdfGeneratorController {
     @Autowired
     PdfGeneratorService pdfGeneratorService;
 
+    /*
+GetMapping - Request GET - Zbieranie informacji - 200
+PostMapping - Request POST - Tworzenie elementów - 201 / 400
+PatchMapping - Request Patch - Aktualizacja elementów - 200 / 400 / 404
+DeleteMapping - Request Delete - Usunięcie elementów - 204 / 404
+ */
     private void prepareResponse(HttpServletResponse response, String filePrefix) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm");
         String currentDateFormatted = dateFormat.format(new Date());

@@ -22,6 +22,7 @@ import java.util.List;
 
 import static com.uz.shop.animal.world.utils.Dictionary.ITEM_NOT_FOUND;
 
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
 @AllArgsConstructor
 public class OrderService {
@@ -31,6 +32,9 @@ public class OrderService {
 
     private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
+    /*
+    Pobierane są wszystkie elemnenty dla admina, w innym przypadku są zwracane elementy tylko do należącego użytkownika.
+     */
     public ResponseEntity<List<Order>> getAll(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -42,6 +46,7 @@ public class OrderService {
 
     }
 
+    //Przygotowane odpowiedzi z serwera
     private ResponseEntity<ObjectNode> responses(Order order, Boolean isCreate) {
         ObjectNode tree = mapper.valueToTree(order);
         if(isCreate) {
@@ -51,10 +56,17 @@ public class OrderService {
         }
     }
 
+    //Pobieranie zamówienia po ID
     private Order findOrderById(Long id) {
         return  orderRepository.findById(id).orElseThrow(()->
                 new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));
     }
+
+    /*
+    Tworzenie Zamówienia
+    Pobierany jest adres oraz walidoawny.
+    Zamówienie zostaje utworzone oraz zapisane w bazie.
+     */
     public ResponseEntity<ObjectNode> createOrder(OrderRequest request) {
 
         Address address = addressRepository.findById(request.getAddress()).orElseThrow(()->
@@ -67,12 +79,22 @@ public class OrderService {
         return responses(order, true);
     }
 
+
+    /*
+    Pobieranie pojedynczego zamówienia po ID
+     */
     public ResponseEntity<ObjectNode> getOrderById(Long id) {
         Order order = findOrderById(id);
 
         return responses(order, false);
     }
 
+    /*
+    Aktualizacja Zamówienia
+    Wyszukiwane jest zamówienie.
+    Ustawiany jest status oraz zapisywany.
+    Zwracana jest odpowiedź.
+     */
    public ResponseEntity<ObjectNode> updateOrder(Long id, OrderRequest request) {
         Order order = findOrderById(id);
 
@@ -83,6 +105,10 @@ public class OrderService {
         return responses(order, false);
     }
 
+    /*
+    Usuwanie Zamówienia,
+    Wyszukiwane jest zamówienie a następnie usuwane.
+     */
     public ResponseEntity.BodyBuilder deleteOrder(Long id) {
         Order order = orderRepository.findById(id).orElseThrow(()->
                 new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));

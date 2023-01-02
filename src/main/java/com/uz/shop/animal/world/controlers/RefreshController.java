@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-
+/*
+Kontrolery służą do zarządzania ścieżkami zapytań oraz interakcją między zapytaniem a przebiegiem zapytania biznesowego
+*/
 @RestController
 @RequestMapping(path = "api/v1/token/refresh")
 @AllArgsConstructor
@@ -30,10 +32,15 @@ public class RefreshController {
     private final UserService userService;
     @Autowired
     private final JwtUtil jwtUtil;
-
+    /*
+    GetMapping - Request GET - Zbieranie informacji - 200
+    PostMapping - Request POST - Tworzenie elementów - 201 / 400
+    PatchMapping - Request Patch - Aktualizacja elementów - 200 / 400 / 404
+    DeleteMapping - Request Delete - Usunięcie elementów - 204 / 404
+     */
     @PostMapping("/{refreshToken}")
     public void refreshToken(@PathVariable("refreshToken") String refreshToken, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+// Sprawdza czy podany token nie jest nullem, jeśli to prawda tworzyumy nowy token
         if (refreshToken != null) {
             try {
                 String email = jwtUtil.getUsernameFromToken(refreshToken);

@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * Klasa odpowiadająca za utworzenie odpowiedniego response odnośnie błędu
+ */
 @Getter
 @AllArgsConstructor
 public class ApiError {

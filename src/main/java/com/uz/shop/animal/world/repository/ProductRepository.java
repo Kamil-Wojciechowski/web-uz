@@ -9,14 +9,20 @@ import java.util.Collection;
 import java.util.Optional;
 
 
+/**
+ * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    //Zbieranie produktu po ID
     @Override
     Optional<Product> findById(Long aLong);
 
+    //Zbieranie produktu po nazwie
     Optional<Product> findByName(String name);
 
+    //Zbieranie produktów, które są widoczne dla zwykłego użytkownika
     @Query(
             value = "SELECT * FROM products p WHERE p.is_visible = 1",
             nativeQuery = true)

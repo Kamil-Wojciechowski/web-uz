@@ -25,6 +25,8 @@ import java.util.Map;
 
 import static com.uz.shop.animal.world.utils.Dictionary.*;
 
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
+
 @Service
 @EnableAutoConfiguration
 @AllArgsConstructor
@@ -37,16 +39,29 @@ public class ProductService {
     @Autowired
     private ProductTagRepository productTagRepository;
 
+    /*
+    Pobieranie produktów.
+    Jeśli użytkownik zalogowany jest admin pobierane są wszystkie elementy.
+    W innym przypadku zwracane są tylko elementy ustawione jako widoczne.
+     */
     public ResponseEntity<List<Product>> findAll() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<Product> products;
 
         if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return ResponseEntity.ok(productRepository.findAll());
+            products = productRepository.findAll();
+        } else {
+            products = new ArrayList<>(productRepository.findAllVisible());
         }
 
-        return ResponseEntity.ok(new ArrayList<>(productRepository.findAllVisible()));
+        for(Product product : products) {
+            product.setAvailable(product.getAmount() - product.getAmountBought());
+        }
+
+        return ResponseEntity.ok(products);
     }
 
+    // Odpowiedzi Created oraz Update
     private ResponseEntity<ObjectNode> respones(Product product, Boolean isCreate) {
         ObjectNode tree = mapper.valueToTree(product);
         if(isCreate) {
@@ -56,6 +71,11 @@ public class ProductService {
         }
     }
 
+    /*
+    Tworzenie produktu
+    Produkt jest walidowany, jeśli chodzi o nazwę oraz produkt tag.
+    Zapisywany jest w bazie, a następnie zwracana jest odpowiedź z serwera.
+     */
     public ResponseEntity<ObjectNode> create(ProductPostRequest request) {
         if(productRepository.findByName(request.getName()).isPresent()) {
             return ErrorResponseCreator.buildBadRequest("Error", ALREADY_EXISTS);
@@ -76,6 +96,7 @@ public class ProductService {
                 request.getName(),
                 request.getDescription(),
                 request.getAmount(),
+                0,
                 request.getPriceUnit(),
                 request.getImageBase(),
                 request.getVideoUrl(),
@@ -85,6 +106,7 @@ public class ProductService {
         return respones(savedProduct, true);
     }
 
+    //Pobieranie produktu po ID
     private Product getProduct(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() ->
@@ -92,6 +114,11 @@ public class ProductService {
                 );
     }
 
+    /*
+    Metoda odpowiadająca za aktualizacje produktu.
+    Pierw pobierana jest HashMapa z requesta, a następnie mapowana względem odpowiednich kluczy do swoich wartości.
+    Dalej tam walidoawna czy powinna zostać umieszczona.
+     */
     private void setProduct(ProductRequest request, Product product) {
         Map<String, Object> map = request.getHashMap();
 
@@ -135,12 +162,18 @@ public class ProductService {
         });
     }
 
+    //Pobieranie produktu po ID
     public ResponseEntity<ObjectNode> getProductById(Long productId) {
         Product product = getProduct(productId);
 
         return respones(product, false);
     }
 
+    /* Aktualizacja produktu
+    Używana jest tutaj metoda wcześniej opisana do ustawiania produktu.
+    Produkt jest pobierany, następnie aktualizowany i zapisywany.
+    Odpowiedź z serwera zostaje przygotowana i zwracana.
+     */
     public ResponseEntity<ObjectNode> update(Long productId, ProductRequest request) {
         Product product = getProduct(productId);
 
@@ -151,6 +184,7 @@ public class ProductService {
         return respones(savedProduct, false);
     }
 
+    //Usuwanie produkut, pobiera produkt po ID a następnie go usuwa
     public void delete(Long id) {
         Product product = getProduct(id);
 

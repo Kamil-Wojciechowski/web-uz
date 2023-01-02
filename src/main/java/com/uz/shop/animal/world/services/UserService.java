@@ -1,6 +1,5 @@
 package com.uz.shop.animal.world.services;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.repository.UserRepository;
 import com.uz.shop.animal.world.models.Token;
@@ -8,7 +7,6 @@ import com.uz.shop.animal.world.models.enums.TokenType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +22,7 @@ import java.util.UUID;
 
 import static com.uz.shop.animal.world.utils.Dictionary.*;
 
+//Serwis odpowiadający za wszystkie procesy związane z użytkownikiem
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
@@ -39,6 +38,7 @@ public class UserService implements UserDetailsService {
     private final TokenService tokenService;
 
 
+    // Funkcja, która zwraca użytkownika po mailu
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
@@ -46,11 +46,21 @@ public class UserService implements UserDetailsService {
                         new UsernameNotFoundException(String.format(USER_NOT_FOUND, email)));
     }
 
+    // Funkcja, która zwraca użytkownika po mailu
     public User getUserByEmail(String email) throws UsernameNotFoundException{
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new UsernameNotFoundException(String.format(USER_NOT_FOUND, email)));
     }
 
+
+    /*
+    Rejestracja użytkownika
+    Sprawdza, czy użytkownik istnieje, jeśli tak zwraca error z informacją, że taki email został wykorzystany
+    Następnie enkodowane jest hasło oraz ustawiane w obiekcie
+    Zapisywany jest użytkownik w bazie.
+    Tworzony jest token typu rejestracji.
+    Po zapisanym tokenie w bazie zwracany jest owy token
+     */
     public String signUpUser(@Valid @RequestBody User user) {
         boolean userExists = userRepository
                 .findByEmail(user.getEmail())
@@ -80,6 +90,11 @@ public class UserService implements UserDetailsService {
         return registrationToken;
     }
 
+    /*
+    Recovery Konta
+    Tworzony jest nowy token po użytkowniu.
+    Zapisujemy token w bazie
+     */
     public String recoveryUser(@Valid @RequestBody User user) {
         String recoveryToken = UUID.randomUUID().toString();
         Token token = new Token(
@@ -94,6 +109,10 @@ public class UserService implements UserDetailsService {
         return recoveryToken;
     }
 
+
+    /*
+    Tworzony jest nowy register token oraz zapisywany w bazie.
+     */
     public String createNewRegisterToken(@Valid @RequestBody User user) {
         String registrationToken = UUID.randomUUID().toString();
         Token token = new Token(
@@ -108,14 +127,16 @@ public class UserService implements UserDetailsService {
         return registrationToken;
     }
 
+    // Zmiana hasła
     public int changePassword(String password, Long id) {
         return userRepository.updatePassword(password, id);
     }
-
+    //Zatwierdzanie użytkownika
     public int enableUser(String email) {
        return userRepository.enableUser(email);
     }
 
+    //Zbieranie użytkownika po tokenie
     public User getUserByAuth() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }

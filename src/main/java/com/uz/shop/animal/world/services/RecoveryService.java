@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 
 import static com.uz.shop.animal.world.utils.Dictionary.*;
 
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
 @AllArgsConstructor
 public class RecoveryService {
@@ -40,6 +41,13 @@ public class RecoveryService {
     @Autowired
     private final ObjectMapper mapper;
 
+    /*
+    Zapytanie o recovery
+    Użytkownik zostaje wyszukany po emailu.
+    Pobierany jest nowy token.
+    Następnie wysyłany.
+    Zwracany jest wcześniej przygotowany response.
+     */
     public ResponseEntity<ObjectNode> recovery(String email) {
         User user = userService.getUserByEmail(email);
 
@@ -50,6 +58,7 @@ public class RecoveryService {
         return recoveryResponse();
     }
 
+    //Przygotowany response od serwera
     private ResponseEntity<ObjectNode> recoveryResponse() {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("message", RECOVERY_EMAIL);
@@ -57,6 +66,13 @@ public class RecoveryService {
         return ResponseEntity.status(HttpStatus.OK).body(objectNode);
     }
 
+    /*
+    Potwierdzanie Tokena recovery
+    Pobierany zostaje token z bazy, walidowany względem czasu wygaśniecia.
+    Walidowany jest body pod względem takich samych haseł.
+    Hasło zostaje encryptowane oraz zmieniane użytkownikowi.
+    Zwracany jest wcześniej przygotowany response.
+     */
     @Transactional
     public ResponseEntity<ObjectNode> confirmToken(String token, RecoveryRequest recoveryRequest) {
         Token tokenItem = tokenService.getToken(token)
@@ -81,6 +97,7 @@ public class RecoveryService {
         return confirmResponse();
     }
 
+    //Przygotowany response od serwera
     private ResponseEntity<ObjectNode> confirmResponse() {
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("message", PASSWORD_CHANGED_SUCCESSFULLY);
@@ -89,6 +106,7 @@ public class RecoveryService {
     }
 
 
+    //Sprawdzanie, czy token istnieje i jest poprawny
     public void getToken(String token) {
         Token tokenItem = tokenService.getToken(token)
                 .orElseThrow(() -> new RestClientResponseException(TOKEN_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null));

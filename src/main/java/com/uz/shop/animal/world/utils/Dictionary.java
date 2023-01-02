@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.utils;
 
+//Polski słownik, który jest wykorzystywany w aplikacji
 public class Dictionary {
     public static final String RECOVERY_EMAIL = "Sprawdź swoją skrzynkę mailową.";
     public static final String TOKEN_NOT_FOUND = "Nie znaleziono tokenu.";
@@ -16,6 +17,10 @@ public class Dictionary {
     public final static String PRODUCT_PARENT_NOT_FOUND = "parentId : Produkt nie istnieje";
     public final static String TAG_NOT_FOUND = "Tag : Taki tag nie istnieje";
     public final static String ITEM_NOT_FOUND = "Nie znaleziono elementu o podanym Id";
+
+    public final static String ITEM_COUNT_NOT_ENOUGH = "Nie można zakupić produktu, ponieważ jest go za mało";
+    public final static String ITEM_NOT_AVALIABLE = "Produkt nie jest dostępny";
+
     public final static String UNAUTHORIZED = "Brak dostępu";
 
     class Inputs {

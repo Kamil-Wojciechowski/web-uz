@@ -6,8 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 
+/**
+ * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ */
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
+    //Select odpowiadający za zbieranie wszystkich adresów, które należą do użytkownika
     @Query(
             value = "SELECT * from addresses a Where a.user_id IN (Select u.id from users u where u.email = ?1 )",
             nativeQuery = true

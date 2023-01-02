@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import static com.uz.shop.animal.world.utils.Dictionary.TOKEN_EXPIRED;
 import static com.uz.shop.animal.world.utils.Dictionary.TOKEN_NOT_FOUND;
 
+//Serwis dotyczący tworzenia tokenów
 @Service
 @AllArgsConstructor
 public class AuthorizationService {

@@ -12,31 +12,33 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Model Zamówień
+ * Model Płatności
  * Lombok pomaga nam utworzyć automatycznie gettery, settery oraz bezargumentowy konstruktor
  * Tag Entity powoduje utworzenie elementu w bazie danych
  */
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity(name="orders")
-public class Order {
-    // Tag ID oraz GeneratedValue oznacza kolumna jest Primary Key oraz wartość jest generowana
+@Entity(name = "payments")
+public class Payment {
+    // Tag ID oraz GeneratedValue oznacza, że kolumna jest Primary Key oraz wartość jest generowana
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     //Tagi poniżej pozwalają utworzyć relacje w bazie danych
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "address_id", referencedColumnName = "id")
+    @JoinColumn(nullable = false, name = "order_id", referencedColumnName = "id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonProperty("addressId")
-    private Address address;
+    @JsonProperty("orderId")
+    private Order order;
 
-    //Tagi oznaczają, że kolumna nie może być pusta w bazie danych oraz odpowiednik klucza w REST jest "orderStatus"
+    //Tag oznacza, że kolumna nie może być pusta w bazie danych
+    @Column(nullable = false)
+    private String status;
 
     @Column(nullable = false)
-    @JsonProperty("orderStatus")
-    private String orderStatus;
+    private String callback_data;
 
     //Flagi odpowiadają za automatyczne tworzenie czasu utworzenia oraz aktualizacji
     @CreationTimestamp
@@ -44,8 +46,9 @@ public class Order {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Order(Address address, String orderStatus) {
-        this.address = address;
-        this.orderStatus = orderStatus;
+    public Payment(Order order, String status, String callback_data) {
+        this.order = order;
+        this.status = status;
+        this.callback_data = callback_data;
     }
 }
