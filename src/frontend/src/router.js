@@ -3,7 +3,8 @@ import HomeComponent from "./components/HomeComponent.vue";
 import LoginComponent from "./components/Auth/LoginComponent.vue";
 import RegisterComponent from "./components/Auth/RegisterComponent.vue";
 import RecoveryComponent from "./components/Auth/RecoveryComponent.vue";
-import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue"
+import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue";
+import ProductComponent from "./components/Products/ProductComponent.vue"
 
 const routes = [
   {
@@ -32,6 +33,14 @@ const routes = [
     component: RecoveryTokenComponent,
     params: {
       token: ""
+    }
+  },
+  {
+    path: "/products/:productId",
+    name: "Product",
+    component: ProductComponent,
+    params: {
+      productId: ""
     }
   },
 ];

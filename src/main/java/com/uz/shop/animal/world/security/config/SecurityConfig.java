@@ -108,6 +108,12 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/v*/products")
                 .permitAll();
 
+        //Zezwolenie do ścieżki nt. produktów po id
+        http
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/v*/products/**")
+                .permitAll();
+
         //Cała reszta ścieżek ma być zabezpieczona pod autoryzacją
         http
                 .authorizeRequests().anyRequest().authenticated();
@@ -125,7 +131,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081", "http://127.0.0.1:8081"));
-        configuration.setAllowedHeaders(Arrays.asList("access-control-allow-origin", "content-type"));
+        configuration.setAllowedHeaders(Arrays.asList("access-control-allow-origin", "content-type", "authorization"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "PUT", "DELETE", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

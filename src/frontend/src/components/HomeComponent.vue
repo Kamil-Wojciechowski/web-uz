@@ -2,25 +2,25 @@
   <br>
   <h3 class="text-center">Witamy w naszym sklepie!</h3>
   <br>
-
-  <div class="card cards" style="width: 80vw;">
-  <h5 class="card-header">Nazwa produktu</h5>
+  <div v-for="product in products" :key="product.id" class="card cards" style="width: 80vw;">
+  <h5 class="card-header">{{ product.name }}</h5>
   <div class="card-body">
-    <h5 class="card-title">Opis</h5>
-    <p class="card-text">Cena</p>
-    <p class="card-text">Kategoria</p>
-    <p class="card-text">Dostepne sztuki:</p>
+    <p class="card-text">Opis produktu: {{ product.description }}</p>
+    <p class="card-text">Cena: {{product.priceUnit}}</p>
+    <p class="card-text">Kategoria: {{product.productTag.name}}</p>
+    <p class="card-text">Dostępne sztuki: {{ product.available }}</p>
     <div class="btn-group" role="group">
-      <a href="#" class="btn btn-outline-info">Obejrzyj</a>
-      <a href="#" class="btn btn-outline-info">Kup</a>
+      <router-link class="btn btn-outline-info" :to="'/products/'+ product.id ">Obejrzyj</router-link>
+      <button @click="buy(product.id, product.available)" class="btn btn-outline-info">Kup</button>
     </div>
   </div>
   </div>
-  
+   
   
 </template>
 
 <script>
+
 export default {
   data(){
     return {
@@ -38,7 +38,30 @@ export default {
       this.productTags = data.data;
       console.log(this.productTags);
     })
-  }
-}
+  },
+  methods: {
+    buy(id, available){
+          let items = [];
+            var amount = 1;
+            if(localStorage.getItem("items")){
+              items = JSON.parse(localStorage.getItem("items"));
+              try {
+                amount = (items.filter(product => product.productId == id))[0].amount;
+              } catch {
+                amount = 0;
+              }
+              if(available > amount) {
+                amount += 1; 
+              }
+              items = (items.filter(product => product.productId != id)); 
+              }
+              
+            items.push({'productId': id, 'amount': amount});
+            localStorage.setItem('items', JSON.stringify(items));
+            console.log(items);
+        }
+      }
+    }
+
 </script>
 

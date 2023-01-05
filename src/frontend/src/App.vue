@@ -33,8 +33,6 @@ export default {
 
 
     this.logged = valid.isLogged
-    console.log(valid);
-    console.log(this.logged);
   },
   data(){
     return{

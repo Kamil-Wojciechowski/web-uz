@@ -166,6 +166,8 @@ public class ProductService {
     public ResponseEntity<ObjectNode> getProductById(Long productId) {
         Product product = getProduct(productId);
 
+        product.setAvailable(product.getAmount() - product.getAmountBought());
+
         return respones(product, false);
     }
 
