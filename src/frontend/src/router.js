@@ -5,6 +5,7 @@ import RegisterComponent from "./components/Auth/RegisterComponent.vue";
 import RecoveryComponent from "./components/Auth/RecoveryComponent.vue";
 import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue";
 import ProductComponent from "./components/Products/ProductComponent.vue"
+import AdminComponent from "@/components/Admin/AdminComponent";
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     params: {
       token: ""
     }
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: AdminComponent
   },
   {
     path: "/products/:productId",

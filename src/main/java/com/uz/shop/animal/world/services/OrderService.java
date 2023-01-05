@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.Address;
 import com.uz.shop.animal.world.models.Order;
+import com.uz.shop.animal.world.models.Payment;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.repository.AddressRepository;
 import com.uz.shop.animal.world.repository.OrderRepository;
+import com.uz.shop.animal.world.repository.PaymentRepository;
 import com.uz.shop.animal.world.request.OrderRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class OrderService {
     @Autowired
     private final OrderRepository orderRepository;
     private final AddressRepository addressRepository;
+
+    private final PaymentRepository paymentRepository;
 
     private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
@@ -75,6 +79,10 @@ public class OrderService {
         Order order = new Order(address, request.getStatus());
 
         order = orderRepository.save(order);
+
+        Payment payment = new Payment(order, "Initialized", "Initialized");
+
+        paymentRepository.save(payment);
 
         return responses(order, true);
     }
