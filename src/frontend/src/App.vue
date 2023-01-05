@@ -1,18 +1,19 @@
 <template>
-<div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Twój koszyk</h1>
+        <h1 class="modal-title fs-5">Twój koszyk</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <table class="table">
   <thead>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nazwa produktu</th>
-      <th scope="col">Ilość</th>
+      <th>#</th>
+      <th >Nazwa produktu</th>
+      <th>Ilość</th>
+      <th>Akcje</th>
     </tr>
   </thead>
   <tbody>
@@ -20,6 +21,7 @@
       <td>{{ item.productId }}</td>
       <td>{{ item.name }}</td>
       <td>{{ item.amount }}</td>
+      <td @click="deleteCartItem(item.productId)">Usuń</td>
     </tr>
   </tbody>
 </table>
@@ -27,7 +29,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zamknij</button>
-        <button type="button" class="btn btn-outline-info">Złóż zamówienie</button>
+        
+        <router-link v-if="logged" class="btn btn-outline-info" to="/placeOrder" >Złóż zamówienie</router-link>
+        <router-link v-else-if="!logged" class="btn btn-outline-info" to="/login" >Zaloguj się by złożyć zamówienie</router-link>
       </div>
     </div>
   </div>
@@ -89,6 +93,16 @@ export default {
         this.cart = JSON.parse(localStorage.getItem("items"));
       }
       
+    },
+    deleteCartItem(id){
+      let items = [];
+      if(localStorage.getItem("items")){
+        items = JSON.parse(localStorage.getItem("items"));
+        items = (items.filter(product => product.productId != id)); 
+      }
+      localStorage.setItem('items', JSON.stringify(items));
+      alert("Usunięto z koszyka");
+      location.reload(true);
     }
   }
 }
