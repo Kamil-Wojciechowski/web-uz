@@ -4,8 +4,8 @@ import LoginComponent from "./components/Auth/LoginComponent.vue";
 import RegisterComponent from "./components/Auth/RegisterComponent.vue";
 import RecoveryComponent from "./components/Auth/RecoveryComponent.vue";
 import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue";
-import ProductComponent from "./components/Products/ProductComponent.vue"
-import AdminComponent from "@/components/Admin/AdminComponent";
+import ProductComponent from "./components/Products/ProductComponent.vue";
+import OrderComponent from "./components/Products/OrderComponent.vue";
 
 const routes = [
   {
@@ -37,17 +37,17 @@ const routes = [
     }
   },
   {
-    path: "/admin",
-    name: "Admin",
-    component: AdminComponent
-  },
-  {
     path: "/products/:productId",
     name: "Product",
     component: ProductComponent,
     params: {
       productId: ""
     }
+  },
+  {
+    path: "/placeOrder",
+    name: "Order",
+    component: OrderComponent,
   },
 ];
 

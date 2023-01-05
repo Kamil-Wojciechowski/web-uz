@@ -82,7 +82,7 @@ export default {
 
           location.reload(true);
         }).catch(error => {
-          this.form.error = error.response.data.message;
+          this.form.error = error.response.data.errors[0];
           this.form.message = "";
         });
     },
