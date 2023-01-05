@@ -10,6 +10,7 @@ import com.uz.shop.animal.world.request.ProductPostRequest;
 import com.uz.shop.animal.world.request.ProductRequest;
 import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +41,24 @@ public class ProductService {
     @Autowired
     private ProductTagRepository productTagRepository;
 
+
+    //Enkoduje byte to String w base64 dla frontendu oraz zapisuje pod wartoscia imageBase
+    private void setProductImageBase(Product product)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("data:image/png;base64,");
+        sb.append(StringUtils.newStringUtf8(Base64.getEncoder().encode(product.getImage())));
+
+        product.setImageBase(sb.toString());
+    }
+
+    //Przelicza dostępną ilość
+    private void setProductAvailable(Product product)
+    {
+        product.setAvailable(product.getAmount() - product.getAmountBought());
+    }
+
     /*
     Pobieranie produktów.
     Jeśli użytkownik zalogowany jest admin pobierane są wszystkie elementy.
@@ -55,7 +75,8 @@ public class ProductService {
         }
 
         for(Product product : products) {
-            product.setAvailable(product.getAmount() - product.getAmountBought());
+            setProductImageBase(product);
+            setProductAvailable(product);
         }
 
         return ResponseEntity.ok(products);
@@ -90,6 +111,7 @@ public class ProductService {
                     new RestClientResponseException(ITEM_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null)
                 );
 
+        byte[] decodedImage = Base64.getDecoder().decode(request.getImageBase());
 
         Product savedProduct = productRepository.save(new Product(
                 productTag,
@@ -98,7 +120,7 @@ public class ProductService {
                 request.getAmount(),
                 0,
                 request.getPriceUnit(),
-                request.getImageBase(),
+                decodedImage,
                 request.getVideoUrl(),
                 request.getIsVisible()
         ));
@@ -146,7 +168,9 @@ public class ProductService {
                         product.setPriceUnit((Double) value);
                         break;
                     case "imageBase":
-                        product.setImageBase(value.toString());
+                        byte[] decodedImage = Base64.getDecoder().decode(value.toString());
+
+                        product.setImage(decodedImage);
                         break;
                     case "videoUrl":
                         product.setVideoUrl(value.toString());
@@ -166,7 +190,8 @@ public class ProductService {
     public ResponseEntity<ObjectNode> getProductById(Long productId) {
         Product product = getProduct(productId);
 
-        product.setAvailable(product.getAmount() - product.getAmountBought());
+        setProductImageBase(product);
+        setProductAvailable(product);
 
         return respones(product, false);
     }
