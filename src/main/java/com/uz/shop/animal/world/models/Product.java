@@ -1,11 +1,13 @@
 package com.uz.shop.animal.world.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
@@ -55,13 +57,17 @@ public class Product {
     @JsonProperty("available")
     private Integer available;
 
+    @Transient
+    @JsonProperty("imageBase")
+    private String imageBase;
+
     @Column(nullable = false)
     @JsonProperty("priceUnit")
     private Double priceUnit;
 
-    @Column(nullable = false)
-    @JsonProperty("imageBase")
-    private String imageBase;
+    @Column(nullable = false, columnDefinition="LONGBLOB")
+    @JsonIgnore
+    private byte[] image;
 
     @Column
     @JsonProperty("videoUrl")
@@ -76,13 +82,13 @@ public class Product {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Product(ProductTag productTag, String name, String description, Integer amount, Integer amountBought, Double priceUnit, String imageBase, String videoUrl, Boolean isVisible) {
+    public Product(ProductTag productTag, String name, String description, Integer amount, Integer amountBought, Double priceUnit, byte[] image, String videoUrl, Boolean isVisible) {
         this.productTag = productTag;
         this.name = name;
         this.description = description;
         this.amount = amount;
         this.priceUnit = priceUnit;
-        this.imageBase = imageBase;
+        this.image = image;
         this.videoUrl = videoUrl;
         this.amountBought = amountBought;
         this.isVisible = isVisible;
