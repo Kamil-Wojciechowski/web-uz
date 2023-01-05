@@ -11,7 +11,7 @@
     <p class="card-text">Dostępne sztuki: {{ product.available }}</p>
     <div class="btn-group" role="group">
       <router-link class="btn btn-outline-info" :to="'/products/'+ product.id ">Obejrzyj</router-link>
-      <button @click="buy(product.id, product.available)" class="btn btn-outline-info">Kup</button>
+      <button @click="buy(product.id, product.available, product.name)" class="btn btn-outline-info">Kup</button>
     </div>
   </div>
   </div>
@@ -40,7 +40,7 @@ export default {
     })
   },
   methods: {
-    buy(id, available){
+    buy(id, available, name){
           let items = [];
             var amount = 1;
             if(localStorage.getItem("items")){
@@ -56,9 +56,10 @@ export default {
               items = (items.filter(product => product.productId != id)); 
               }
               
-            items.push({'productId': id, 'amount': amount});
+            items.push({'productId': id, 'amount': amount, 'name': name});
             localStorage.setItem('items', JSON.stringify(items));
             console.log(items);
+            alert("Dodano do koszyka");
         }
       }
     }
