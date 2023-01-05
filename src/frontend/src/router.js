@@ -6,6 +6,7 @@ import RecoveryComponent from "./components/Auth/RecoveryComponent.vue";
 import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue";
 import ProductComponent from "./components/Products/ProductComponent.vue";
 import OrderComponent from "./components/Products/OrderComponent.vue";
+import AdminComponent from "@/components/Admin/AdminComponent";
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: "/placeOrder",
     name: "Order",
     component: OrderComponent,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: AdminComponent,
   },
 ];
 
