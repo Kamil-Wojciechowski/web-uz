@@ -14,8 +14,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faRightToBracket, faUserPlus, faRightFromBracket, faCartShopping, faCheck, faCross, faEye ,faPlus, faMinus, faEdit} from '@fortawesome/free-solid-svg-icons'
+import { faRightToBracket, faUserPlus, faRightFromBracket, faCartShopping, faCheck, faX, faEye ,faPlus, faMinus, faEdit, faFile, faTruckFast} from '@fortawesome/free-solid-svg-icons'
 
-library.add(faRightToBracket, faUserPlus, faRightFromBracket, faCartShopping, faCheck, faCross, faEye, faPlus, faMinus, faEdit)
+library.add(faRightToBracket, faUserPlus, faRightFromBracket, faCartShopping, faCheck, faX, faEye, faPlus, faMinus, faEdit, faFile, faTruckFast)
 
 createApp(App).use(VueAxios, http).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app')

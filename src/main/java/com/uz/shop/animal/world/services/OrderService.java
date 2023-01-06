@@ -2,13 +2,8 @@ package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.uz.shop.animal.world.models.Address;
-import com.uz.shop.animal.world.models.Order;
-import com.uz.shop.animal.world.models.Payment;
-import com.uz.shop.animal.world.models.User;
-import com.uz.shop.animal.world.repository.AddressRepository;
-import com.uz.shop.animal.world.repository.OrderRepository;
-import com.uz.shop.animal.world.repository.PaymentRepository;
+import com.uz.shop.animal.world.models.*;
+import com.uz.shop.animal.world.repository.*;
 import com.uz.shop.animal.world.request.OrderPatchRequest;
 import com.uz.shop.animal.world.request.OrderRequest;
 import lombok.AllArgsConstructor;
@@ -32,8 +27,8 @@ public class OrderService {
     @Autowired
     private final OrderRepository orderRepository;
     private final AddressRepository addressRepository;
-
-    private final PaymentRepository paymentRepository;
+    private final OrderUnitRepository unitRepository;
+    private final ProductRepository productRepository;
 
     private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
@@ -81,10 +76,6 @@ public class OrderService {
 
         order = orderRepository.save(order);
 
-        Payment payment = new Payment(order, "Initialized", "Initialized");
-
-        paymentRepository.save(payment);
-
         return responses(order, true);
     }
 
@@ -118,6 +109,17 @@ public class OrderService {
            }
        } else {
            order.setOrderStatus(request.getStatus());
+       }
+
+       if(request.getStatus().equals("Anulowane")) {
+            List<OrderUnit> orderUnitList =  new ArrayList<>(unitRepository.findByOrderId(id));
+
+            for(OrderUnit unit : orderUnitList) {
+                Product product = unit.getProduct();
+
+                product.setAmountBought(product.getAmountBought() - unit.getAmount());
+            }
+
        }
 
         order = orderRepository.save(order);

@@ -39,6 +39,14 @@ public class OrderUnit {
     @JsonProperty("orderId")
     private Order order;
 
+    @Column(nullable = false)
+    @JsonProperty("oldProductName")
+    private String oldProductName;
+
+    @Column(nullable = false)
+    @JsonProperty("oldPrice")
+    private Double oldPrice;
+
     //Tagi oznaczają, że kolumna nie może być pusta w bazie danych oraz odpowiednik klucza w REST jest "amount"
     @Column(nullable = false)
     @JsonProperty("amount")
@@ -48,7 +56,9 @@ public class OrderUnit {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public OrderUnit(Product product, Order order, Integer amount) {
+    public OrderUnit(Product product, Order order, Integer amount, Double oldPrice, String oldProductName ) {
+        this.oldPrice = oldPrice;
+        this.oldProductName = oldProductName;
         this.product = product;
         this.order = order;
         this.amount = amount;

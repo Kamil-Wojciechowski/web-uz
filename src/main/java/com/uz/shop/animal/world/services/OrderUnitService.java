@@ -95,7 +95,7 @@ public class OrderUnitService {
 
         validateAmountBought((product.getAmount() - product.getAmountBought()), request.getAmount());
 
-        OrderUnit orderUnit = new OrderUnit(product, order, request.getAmount());
+        OrderUnit orderUnit = new OrderUnit(product, order, request.getAmount(), product.getPriceUnit(), product.getName());
 
         orderUnit = orderUnitRepository.save(orderUnit);
 
