@@ -6,6 +6,7 @@ import RecoveryComponent from "./components/Auth/RecoveryComponent.vue";
 import RecoveryTokenComponent from "./components/Auth/RecoveryTokenComponent.vue";
 import ProductComponent from "./components/Products/ProductComponent.vue";
 import OrderComponent from "./components/Products/OrderComponent.vue";
+import OrderListComponent from "./components/Products/OrderListComponent.vue";
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: "/placeOrder",
     name: "Order",
     component: OrderComponent,
+  },
+  {
+    path: "/orderList",
+    name: "OrderList",
+    component: OrderListComponent,
   },
 ];
 

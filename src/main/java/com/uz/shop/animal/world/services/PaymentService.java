@@ -15,9 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.uz.shop.animal.world.utils.Dictionary.ITEM_NOT_FOUND;
 
 //Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
@@ -46,7 +49,9 @@ public class PaymentService {
     Następnie zależnie od uprawnień zwracany jest odpowiedź.
      */
     public ResponseEntity<List<Payment>> getAllForOrder(long idOrder) {
-        Order order = orderRepository.findOrderById(idOrder);
+        Order order = orderRepository.findOrderById(idOrder).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        );
 
         if (!this.checkAccess(order)) {
             return new ResponseEntity<List<Payment>>(new ArrayList<Payment>(), HttpStatus.UNAUTHORIZED);
@@ -57,13 +62,17 @@ public class PaymentService {
 
     //Pobieranie ostatniej płatności za zamówienie - Logika jak powyżej
     public ResponseEntity<Payment> getLastPaymentForOrder(long idOrder) {
-        Order order = orderRepository.findOrderById(idOrder);
+        Order order = orderRepository.findOrderById(idOrder).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        );;
 
         if (!this.checkAccess(order)) {
             return new ResponseEntity<Payment>(new Payment(), HttpStatus.UNAUTHORIZED);
         }
 
-        return ResponseEntity.ok(paymentRepository.findLastPaymentByOrderId(idOrder));
+        return ResponseEntity.ok(paymentRepository.findLastPaymentByOrderId(idOrder).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        ));
     }
 
     /*
@@ -73,7 +82,9 @@ public class PaymentService {
     Płatność jest zapisana w bazie.
      */
     public ResponseEntity<ObjectNode> createPayment(PaymentRequest request) {
-        Order order = orderRepository.findOrderById(request.getOrderId());
+        Order order = orderRepository.findOrderById(request.getOrderId()).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        );
         Payment payment = new Payment(order, request.getStatus(), request.getCallbackData());
         payment = paymentRepository.save(payment);
 
@@ -87,7 +98,9 @@ public class PaymentService {
     Płatnośc jest zapisywana.
      */
     public ResponseEntity<ObjectNode> updatePayment(Long id, PaymentRequest request) {
-        Payment payment = paymentRepository.findPaymentById(id);
+        Payment payment = paymentRepository.findPaymentById(id).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        );;
         payment.setStatus(request.getStatus());
         payment.setCallback_data(request.getCallbackData());
 

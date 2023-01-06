@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
@@ -23,5 +24,5 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
             value = "SELECT * FROM orders WHERE id = ?1",
             nativeQuery = true
     )
-    Order findOrderById(long id_order);
+    Optional<Order> findOrderById(long id_order);
 }
