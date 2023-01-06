@@ -108,7 +108,7 @@ public class ElementCreator {
         cell.addElement(this.getParagraph(label, true));
         cell.addElement(this.getParagraph(address.getFirstname() + " " + address.getLastname()));
         cell.addElement(this.getParagraph(address.getStreet()));
-        cell.addElement(this.getParagraph(address.getCity()));
+        cell.addElement(this.getParagraph(address.getPostalCode() + " " + address.getCity()));
 
         cell.setBorder(0);
         return cell;
