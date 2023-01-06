@@ -103,10 +103,21 @@ public class OrderService {
     Ustawiany jest status oraz zapisywany.
     Zwracana jest odpowiedź.
      */
-   public ResponseEntity<ObjectNode> updateOrder(Long id, OrderRequest request) {
-        Order order = findOrderById(id);
+   public ResponseEntity<ObjectNode> updateOrder(Long id, OrderRequest request)
+   {
+       Order order = findOrderById(id);
 
-        order.setOrderStatus(request.getStatus());
+       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+       if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
+           if(order.getOrderStatus().equals("Nowe")) {
+               if(request.getStatus().equals("Opłacone") | request.getStatus().equals("Anulowane")) {
+                   order.setOrderStatus(request.getStatus());
+               }
+           }
+       } else {
+           order.setOrderStatus(request.getStatus());
+       }
 
         order = orderRepository.save(order);
 

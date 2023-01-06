@@ -111,7 +111,7 @@ public class ProductService {
                     new RestClientResponseException(ITEM_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null)
                 );
 
-        byte[] decodedImage = Base64.getDecoder().decode(request.getImageBase());
+        byte[] decodedImage = Base64.getMimeDecoder().decode(request.getImageBase());
 
         Product savedProduct = productRepository.save(new Product(
                 productTag,

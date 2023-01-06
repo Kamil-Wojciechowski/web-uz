@@ -32,8 +32,43 @@
       </tr>
       </tbody>
     </table>
-  </div>
 
+  </div>
+    <form @submit.prevent="addProduct()">
+      <div class="form-group">
+        <input type="text" class="form-control" v-model="product.name" placeholder="Nazwa" required
+               minlength="3"><br>
+      </div>
+      <div  class="form-group">
+        <select v-model="product.productTag">
+          <option v-for="tag in productTags" :key="tag.id" :value="tag.id">{{tag.name}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" v-model="product.description" placeholder="Opis" required
+               minlength="3"><br>
+      </div>
+      <div class="form-group">
+        <input type="number" class="form-control" v-model="product.amount" placeholder="Sztuki" required><br>
+      </div>
+      <div class="form-group">
+        <input type="number" class="form-control" v-model="product.priceUnit" placeholder="Cena za sztuke" step=".01" required><br>
+      </div>
+      <div class="form-group">
+        <input type="checkbox" class="form-control" v-model="product.isVisible" placeholder="Widoczny">Widoczny<br>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" v-model="product.videoUrl" placeholder="Link"><br>
+      </div>
+      <div class="form-group">
+        <input type="file" class="form-control" ref="file" @change="readFile"><br>
+      </div>
+      <div class="form-group">
+        <button class="btn btn-outline-info" type="submit">Dodaj</button><br>
+      </div>
+
+      <div class="text-danger">{{ errors }}</div>
+    </form>
   <div>
 
   </div>
@@ -89,33 +124,70 @@ import Mixins from '@/mixins';
 export default {
   data(){
     return {
+      product: {},
       orders: [],
       products: [],
-      productTags: []
+      productTags: [],
+      errors: []
     };
   },
   async created() {
     const data = await Mixins.methods.checkValidity();
 
-    if(!data.isAdmin) {
+    if(!data.isAdmin || !data.isLogged) {
       return this.$router.replace({
         name: "Home"
       });
     }
   },
   beforeMount() {
-    this.$http.get("/products").then(data => {
-      this.products = data.data;
-    })
+    this.writeProducts();
+    this.writeTags();
+    this.writeOrders();
+  },
+  methods: {
+    writeProducts() {
+      this.products = [];
 
-    this.$http.get("/products/tags").then(data => {
-      this.productTags = data.data;
-    })
+      this.$http.get("/products").then(data => {
+        this.products = data.data;
+      })
+    },
+    writeTags() {
+      this.productTags = [];
+
+      this.$http.get("/products/tags").then(data => {
+        this.productTags = data.data;
+      })
+    },
+    writeOrders() {
+      this.orders = [];
+
+      this.$http.get("/orders").then(data => {
+        this.orders = data.data;
+      })
+    },
+    addProduct() {
+      console.log(this.product);
+
+      this.$http.post("/products", this.product).then((data) => {
+        this.writeProducts();
+      }).catch((error) => {
+        console.log(error);
+      });
 
 
-    this.$http.get("/orders").then(data => {
-      this.orders = data.data;
-    })
+
+    },
+    readFile() {
+      const file = document.querySelector('input[type=file]').files[0]
+      let fr = new FileReader();
+      fr.readAsDataURL(file);
+
+      fr.onloadend = () => {
+        this.product.imageBase = fr.result;
+      }
+    }
   }
 }
 

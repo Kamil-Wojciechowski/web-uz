@@ -37,7 +37,6 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<ObjectNode> postOrder(@Valid @RequestBody OrderRequest request) { return orderService.createOrder(request); }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PatchMapping("/{orderId}")
     public ResponseEntity<ObjectNode> patchOrder(@PathVariable("orderId") Long orderId, @Valid @RequestBody OrderRequest request) { return orderService.updateOrder(orderId, request); }
 
