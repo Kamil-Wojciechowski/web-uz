@@ -51,6 +51,7 @@
       <font-awesome-icon class="navicon" title="Wyloguj"  @Click="logout" icon="fa-solid fa-right-from-bracket"/>
       <router-link to="/orderList"><font-awesome-icon class="navicon" title="Moje zamówienia" icon="fa-solid fa-user" /></router-link>
       <font-awesome-icon title="Koszyk" @click ="getCartItems" class="navicon" type="button" data-bs-toggle="modal" data-bs-target="#shoppingCartModal" icon="fa-solid fa-cart-shopping"/>
+      <router-link to="/admin"><font-awesome-icon v-if="admin" class="navicon" title="Panel administracyjny" icon="fa-solid fa-gear" /></router-link>
     </div>
     <div v-else-if="!logged">
 
@@ -74,13 +75,14 @@ export default {
 
   async beforeMount() {
     const valid = await Mixins.methods.checkValidity(this.$route.name);
-
+    this.admin = valid.isAdmin;
 
     this.logged = valid.isLogged
   },
   data(){
     return{
       logged: null,
+      admin: null,
       buy: false,
       cart: []
     }

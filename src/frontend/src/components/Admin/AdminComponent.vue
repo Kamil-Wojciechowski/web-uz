@@ -1,17 +1,18 @@
 <template>
   <div>
+    <h4>Produkty</h4>
     <table class="table">
       <thead>
         <th scope="col">#</th>
         <th scope="col">Nazwa</th>
         <th scope="col">Opis</th>
-        <th scope="col">Ilosc</th>
-        <th scope="col">Ilość wykupionych</th>
+        <th scope="col">Ilość</th>
+        <th scope="col">Sprzedane</th>
         <th scope="col">Pozostało</th>
-        <th scope="col">Kwota za sztuke</th>
-        <th scope="col">Widocznę dla klienta</th>
-        <th scope="col">Opcje </th>
-        <font-awesome-icon title="Dodaj" icon="fa-solid fa-plus" @click="product={}"/>
+        <th scope="col">Kwota za sztukę</th>
+        <th scope="col">Widoczne dla klienta</th>
+        <th scope="col">Opcje</th>
+        <font-awesome-icon title="Dodaj" class="navicon" icon="fa-solid fa-plus" data-bs-toggle="modal" data-bs-target="#productModal" @click="product={}"/>
       </thead>
       <tbody>
       <tr v-for="product in products" :key="product.id">
@@ -25,41 +26,56 @@
         <td v-if="product.isVisible"><font-awesome-icon title="Tak" icon="fa-solid fa-check"/></td>
         <td v-else><font-awesome-icon title="Nie" icon="fa-solid fa-x"/></td>
         <td>
-          <font-awesome-icon title="Edytuj" icon="fa-solid fa-edit" @click="chooseProductItem(product.id, true)"/>
-          <font-awesome-icon title="Usun" icon="fa-solid fa-minus" @click="chooseProductItem(product.id, false)"/>
+          <font-awesome-icon title="Edytuj" class="navicon" icon="fa-solid fa-edit" data-bs-toggle="modal" data-bs-target="#productModal" @click="chooseProductItem(product.id, true)"/>
+          <font-awesome-icon title="Usuń" class="navicon" icon="fa-solid fa-minus" @click="chooseProductItem(product.id, false)"/>
         </td>
       </tr>
       </tbody>
     </table>
 
   </div>
-    <form @submit.prevent="productFormHandler()">
+
+<div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Produkt</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form @submit.prevent="productFormHandler()">
       <div class="form-group">
+        Nazwa produktu:
         <input type="text" class="form-control" v-model="product.name" placeholder="Nazwa" required
                minlength="3"><br>
       </div>
       <div  class="form-group">
+        Kategoria produktu:
         <select v-model="product.productTag">
           <option v-for="tag in productTags" :key="tag.id" :value="tag.id">{{tag.name}}</option>
         </select>
       </div>
       <div class="form-group">
-        <input type="text" class="form-control" v-model="product.description" placeholder="Opis" required
-               minlength="3"><br>
+        Opis produktu:
+        <input type="text" class="form-control" v-model="product.description" placeholder="Opis" required minlength="3"><br>
       </div>
       <div class="form-group">
+        Ilość:
         <input type="number" class="form-control" v-model="product.amount" placeholder="Sztuki" required><br>
       </div>
       <div class="form-group">
+        Cena za sztukę:
         <input type="number" class="form-control" v-model="product.priceUnit" placeholder="Cena za sztuke" step=".01" required><br>
       </div>
       <div class="form-group">
         <input type="checkbox" v-model="product.isVisible">Widoczny<br>
       </div>
       <div class="form-group">
+        Link do wideo promocyjnego:
         <input type="text" class="form-control" v-model="product.videoUrl" placeholder="Link"><br>
       </div>
       <div class="form-group">
+        Zdjęcie: 
         <input type="file" class="form-control" @change="readFile"><br>
       </div>
 
@@ -71,33 +87,51 @@
 
       <div v-for="error in errors" :key="error" class="text-danger">{{ error }}</div>
     </form>
+      </div>
+    </div>
+  </div>
+</div>
+    
   <div>
   </div>
 
   <div>
+    <h4>Zamówienia</h4>
     <table class="table">
       <thead>
       <th scope="col">#</th>
       <th scope="col">Status</th>
-      <th scope="col">Opcje </th>
+      <th scope="col">Użytkownik</th>
+      <th scope="col">Opcje</th>
       </thead>
       <tbody>
       <tr v-for="order in orders" :key="order.id">
         <td>{{ order.id }}</td>
         <td>{{ order.orderStatus }}</td>
+        <td>{{ order.addressId.userId.firstname }} {{ order.addressId.userId.lastname }}</td>
         <td>
-          <font-awesome-icon title="Edytuj" icon="fa-solid fa-edit" @click="chooseOrderItem(order.id)"/>
-          <font-awesome-icon title="Pobierz fakture" icon="fa-solid fa-file" @click="downloadFv(order.id)"/>
-          <font-awesome-icon title="Pobierz nadanie" icon="fa-solid fa-truck-fast" @click="downloadShipment(order.id)"/>
+          <font-awesome-icon class="navicon" title="Edytuj" data-bs-toggle="modal" data-bs-target="#orderModal" icon="fa-solid fa-edit" @click="chooseOrderItem(order.id)"/>
+          <font-awesome-icon class="navicon" title="Pobierz fakturę" icon="fa-solid fa-file" @click="downloadFv(order.id)"/>
+          <font-awesome-icon class="navicon" title="Pobierz etykietę" icon="fa-solid fa-truck-fast" @click="downloadShipment(order.id)"/>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
-
   <div>
-    <form @submit.prevent="editOrder">
+    
+<div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Zamówienie</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <label>Status płatności: {{ payment.status }}. Pamiętaj o wysyłaniu tylko opłaconych zamówień!</label>
+        <form @submit.prevent="editOrder">
       <div  class="form-group">
+        Nowy status:
         <select v-model="order.status">
           <option v-for="status in statuses" :key="status" :value="status">{{status}}</option>
         </select>
@@ -106,19 +140,21 @@
         <button class="btn btn-outline-info" type="submit">Edytuj</button><br>
       </div>
     </form>
-    <div  class="form-group">
-      <label>Status płatności: {{ payment.status }}</label>
+      </div>
     </div>
+  </div>
+</div>
     </div>
 
   <div>
+    <h4>Kategorie</h4>
     <table class="table">
       <thead>
       <th scope="col">#</th>
       <th scope="col">Nazwa</th>
       <th scope="col">Rodzic</th>
       <th scope="col">Opcje </th>
-      <font-awesome-icon title="Dodaj" icon="fa-solid fa-plus" @click="productTag={}"/>
+      <font-awesome-icon title="Dodaj" class="navicon" data-bs-toggle="modal" data-bs-target="#categoryModal" icon="fa-solid fa-plus" @click="productTag={}"/>
       </thead>
       <tbody>
       <tr v-for="tag in productTags" :key="tag.id">
@@ -126,21 +162,30 @@
         <td>{{ tag.name }}</td>
         <td>{{ (tag.parentId == null) ? "": tag.parentId.name }}</td>
         <td>
-          <font-awesome-icon title="Edytuj" icon="fa-solid fa-edit" @click="chooseTagItem(tag.id, true)"/>
-          <font-awesome-icon title="Usun" icon="fa-solid fa-minus" @click="chooseTagItem(tag.id, false)"/>
+          <font-awesome-icon title="Edytuj" class="navicon" data-bs-toggle="modal" data-bs-target="#categoryModal" icon="fa-solid fa-edit" @click="chooseTagItem(tag.id, true)"/>
+          <font-awesome-icon title="Usun" class="navicon" icon="fa-solid fa-minus" @click="chooseTagItem(tag.id, false)"/>
         </td>
       </tr>
       </tbody>
     </table>
   </div>
 
-  <div>
-  <form @submit.prevent="tagFormHandler()">
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Kategoria</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form @submit.prevent="tagFormHandler()">
     <div class="form-group">
+      Nazwa:
       <input type="text" class="form-control" v-model="productTag.name" placeholder="Nazwa" required
              minlength="3"><br>
     </div>
     <div  class="form-group">
+      Rodzic:
       <select v-model="productTag.parentId">
         <option v-for="tag in productTags" :key="tag.id" :value="tag.id">{{tag.name}}</option>
       </select>
@@ -151,12 +196,20 @@
 
     <div v-for="error in errors" :key="error" class="text-danger">{{ error }}</div>
   </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div>
+  
   </div>
 
 </template>
 
 <script>
 import Mixins from '@/mixins';
+import download from 'downloadjs';
 
 export default {
   data(){
@@ -169,7 +222,7 @@ export default {
       products: [],
       productTags: [],
       statuses: [
-        "Nadane",
+        "Anulowane",
         "Wysłane",
         "Zakończone"
       ],
@@ -217,7 +270,7 @@ export default {
       if(this.product.id === undefined) {
         this.$http.post("/products", this.product).then(() => {
           this.errors = [];
-          this.writeProducts();
+          location.reload(true);
         }).catch((error) => {
           console.log(error);
           this.errors = error.response.data.errors;
@@ -225,7 +278,7 @@ export default {
       } else {
         this.$http.patch("/products/" + this.product.id, this.product).then(() => {
           this.errors = [];
-          this.writeProducts();
+          location.reload(true);
         }).catch((error) => {
           this.errors = error.response.data.errors;
         });
@@ -272,13 +325,13 @@ export default {
       })
     },
     downloadFv(id) {
-      this.$http.get("/pdf/invoice?id_order=" + id).then((data) => {
-        console.log(data.data);
+      this.$http.get("/pdf/invoice?id_order=" + id, { responseType: 'blob' }).then((data) => {
+        download(data.data, "faktura_"+id+".pdf", "application/pdf");
       })
     },
     downloadShipment(id) {
-      this.$http.get("/pdf/label?id_order=" + id).then((data) => {
-        console.log(data.data);
+      this.$http.get("/pdf/label?id_order=" + id, { responseType: 'blob' }).then((data) => {
+        download(data.data, "etykieta_"+id+".pdf", "application/pdf");
       })
     },
     chooseTagItem(id, edit) {
