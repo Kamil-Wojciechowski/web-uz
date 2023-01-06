@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
+import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
+
 /**
  * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
  * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
@@ -14,13 +18,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentRequest {
+public class OrderPatchRequest {
+    @JsonProperty("address")
+    private Long address;
+
     @JsonProperty("status")
     private String status;
-
-    @JsonProperty("callbackData")
-    private String callbackData;
-
-    @JsonProperty("orderId")
-    private Long orderId;
 }

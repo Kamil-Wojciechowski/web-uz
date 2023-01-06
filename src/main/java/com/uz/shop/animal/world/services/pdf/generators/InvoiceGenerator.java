@@ -120,7 +120,7 @@ public class InvoiceGenerator extends BaseGenerator {
             Product product = unit.getProduct();
 
 
-            float nett = (float) (product.getPriceUnit() * 1f);
+            float nett = (float) (unit.getOldPrice() * 1f);
             float tax = nett * 0.23f;
             float gross = nett + tax;
 
@@ -128,7 +128,7 @@ public class InvoiceGenerator extends BaseGenerator {
             sumTax += tax;
             sumGross += gross;
 
-            table.addCell(this.creator.getCell(product.getName()));
+            table.addCell(this.creator.getCell(unit.getOldProductName()));
             table.addCell(this.creator.getCell(String.valueOf(unit.getAmount()), Element.ALIGN_CENTER));
             table.addCell(this.creator.getCell(decimalFormat.format(nett), Element.ALIGN_RIGHT));
             table.addCell(this.creator.getCell(decimalFormat.format(tax), Element.ALIGN_RIGHT));

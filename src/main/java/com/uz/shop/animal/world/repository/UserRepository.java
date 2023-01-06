@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 /**
- * Repoozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
  */
 @Repository
 @Transactional(readOnly = true)

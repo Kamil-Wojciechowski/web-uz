@@ -2,11 +2,9 @@ package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.uz.shop.animal.world.models.Address;
-import com.uz.shop.animal.world.models.Order;
-import com.uz.shop.animal.world.models.User;
-import com.uz.shop.animal.world.repository.AddressRepository;
-import com.uz.shop.animal.world.repository.OrderRepository;
+import com.uz.shop.animal.world.models.*;
+import com.uz.shop.animal.world.repository.*;
+import com.uz.shop.animal.world.request.OrderPatchRequest;
 import com.uz.shop.animal.world.request.OrderRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +27,8 @@ public class OrderService {
     @Autowired
     private final OrderRepository orderRepository;
     private final AddressRepository addressRepository;
+    private final OrderUnitRepository unitRepository;
+    private final ProductRepository productRepository;
 
     private final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
@@ -95,10 +95,32 @@ public class OrderService {
     Ustawiany jest status oraz zapisywany.
     Zwracana jest odpowiedź.
      */
-   public ResponseEntity<ObjectNode> updateOrder(Long id, OrderRequest request) {
-        Order order = findOrderById(id);
+   public ResponseEntity<ObjectNode> updateOrder(Long id, OrderPatchRequest request)
+   {
+       Order order = findOrderById(id);
 
-        order.setOrderStatus(request.getStatus());
+       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+       if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
+           if(order.getOrderStatus().equals("Nowe")) {
+               if(request.getStatus().equals("Opłacone") | request.getStatus().equals("Anulowane")) {
+                   order.setOrderStatus(request.getStatus());
+               }
+           }
+       } else {
+           order.setOrderStatus(request.getStatus());
+       }
+
+       if(request.getStatus().equals("Anulowane")) {
+            List<OrderUnit> orderUnitList =  new ArrayList<>(unitRepository.findByOrderId(id));
+
+            for(OrderUnit unit : orderUnitList) {
+                Product product = unit.getProduct();
+
+                product.setAmountBought(product.getAmountBought() - unit.getAmount());
+            }
+
+       }
 
         order = orderRepository.save(order);
 
@@ -110,9 +132,7 @@ public class OrderService {
     Wyszukiwane jest zamówienie a następnie usuwane.
      */
     public ResponseEntity.BodyBuilder deleteOrder(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(()->
-                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));
-        ;
+        Order order = findOrderById(id);
 
         orderRepository.delete(order);
 

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Collection;
 
 /**
- * Repoozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
  */
 public interface AddressRepository extends JpaRepository<Address, Long> {
 

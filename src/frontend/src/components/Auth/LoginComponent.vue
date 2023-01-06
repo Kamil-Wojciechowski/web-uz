@@ -30,7 +30,10 @@
 </template>
   
 <script>
+import Mixins from '@/mixins';
+
 export default {
+  mixins: [Mixins],
   data() {
     return {
       form: {
@@ -40,6 +43,13 @@ export default {
         message: ""
       }
     };
+  },
+  async beforeMount() {
+    const valid = await Mixins.methods.checkValidity(this.$route.name);
+
+    if(valid.isLogged) {
+      this.redirect();
+    }
   },
   methods: {
     onSubmit() {
@@ -65,14 +75,21 @@ export default {
         }
       })
         .then(data => {
-          console.log(data);
           this.form.message = data.data.message;
           this.form.error = "";
+          localStorage.setItem("token", data.data.access_token);
+          localStorage.setItem("refreshToken", data.data.refresh_token);
+
+          location.reload(true);
         }).catch(error => {
-          console.log(error);
-          this.form.error = error.response.data.message;
+          this.form.error = error.response.data.errors[0];
           this.form.message = "";
         });
+    },
+    redirect() {
+      return this.$router.replace({
+            name: "Home"
+          });
     }
 
   }

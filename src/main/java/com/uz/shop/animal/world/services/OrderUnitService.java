@@ -6,15 +6,11 @@ import com.uz.shop.animal.world.models.*;
 import com.uz.shop.animal.world.repository.OrderRepository;
 import com.uz.shop.animal.world.repository.OrderUnitRepository;
 import com.uz.shop.animal.world.repository.ProductRepository;
-import com.uz.shop.animal.world.request.OrderRequest;
 import com.uz.shop.animal.world.request.OrderUnitRequest;
-import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
@@ -99,7 +95,7 @@ public class OrderUnitService {
 
         validateAmountBought((product.getAmount() - product.getAmountBought()), request.getAmount());
 
-        OrderUnit orderUnit = new OrderUnit(product, order, request.getAmount());
+        OrderUnit orderUnit = new OrderUnit(product, order, request.getAmount(), product.getPriceUnit(), product.getName());
 
         orderUnit = orderUnitRepository.save(orderUnit);
 

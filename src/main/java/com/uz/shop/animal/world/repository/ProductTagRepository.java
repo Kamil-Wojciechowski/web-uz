@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 /**
- * Repoozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
  */
 public interface ProductTagRepository extends JpaRepository<ProductTag, Integer> {
 

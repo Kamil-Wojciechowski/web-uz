@@ -10,7 +10,7 @@ import java.util.Optional;
 
 
 /**
- * Repoozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
+ * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
  */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -27,4 +27,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             value = "SELECT * FROM products p WHERE p.is_visible = 1",
             nativeQuery = true)
     Collection<Product> findAllVisible();
+
+    @Query(
+            value = "SELECT * FROM products p WHERE p.is_visible = ?1 and p.product_tag_id = ?2",
+            nativeQuery = true)
+    Collection<Product> findByProductTagId(Boolean visible, Integer productTag);
+
+    @Query(
+            value = "SELECT * FROM products p WHERE p.is_visible = ?1 and p.product_tag_id = ?2",
+            nativeQuery = true)
+    Collection<Product> findByProductTagId(Integer productTag);
 }
