@@ -1,5 +1,6 @@
 <template>
-<div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
+<div v-if="buy" >
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -56,7 +57,7 @@
     </div>
   </div>
 </div>
-
+<br><h5 class="text-center">Zawartość Twojego koszyka</h5><br>
 <table class="table">
   <thead>
     <tr>
@@ -73,19 +74,24 @@
     </tr>
   </tbody>
 </table>
-Wybierz adres dostawy: 
+<br>
+<p>Wybierz adres dostawy: </p>
 <div v-for="address in addresses" :key="address.id">
 <li>{{ address.lastname }}, {{ address.firstname }}, {{ address.postalCode }}, {{ address.city }} 
 <button class="btn btn-outline-info" @click="selectAddress(address.id)">Wybierz</button></li>
 </div>
-lub <button data-bs-toggle="modal" data-bs-target="#addressModal" class="btn btn-outline-info">Dodaj nowy adres</button>
+<p>lub <button data-bs-toggle="modal" data-bs-target="#addressModal" class="btn btn-outline-info">Dodaj nowy adres</button></p>
 
-Aktualnie wybrany adres: {{ currentAddress.lastname }}, {{ currentAddress.firstname }}, {{ currentAddress.compant }}, {{ currentAddress.nip }}, {{ currentAddress.mobileNumber }}, {{ currentAddress.street }}, {{ currentAddress.postalCode }}, {{ currentAddress.city }}
-
+<p class="text-center">Aktualnie wybrany adres: {{ currentAddress.lastname }} {{ currentAddress.firstname }} {{ currentAddress.company }} {{ currentAddress.nip }} {{ currentAddress.mobileNumber }} {{ currentAddress.street }} {{ currentAddress.postalCode }} {{ currentAddress.city }}
+</p>
 <button v-if="currentAddress.id" @click="placeOrder" class="btn btn-outline-info">Złóż zamówienie</button><br>
-Status zamówienia: {{ orderStatus.orderStatus }}. Nie odświeżaj tej strony! 
+<p>Status zamówienia: {{ orderStatus.orderStatus }}. Nie odświeżaj tej strony w trakcie składania zamówienia!</p>
 <button v-if="orderStatus.orderStatus==='Nowe'" data-bs-toggle="modal" data-bs-target="#paymentModal" class="btn btn-outline-info">Opłać zamówienie</button>
-<router-link v-if="orderStatus.orderStatus==='Opłacone'" to="/orderList" class="btn btn-outline-info">Zobacz swoje zamówienia</router-link>
+<router-link v-if="orderStatus.orderStatus==='Opłacone'" @click="endOrder" to="/orderList" class="btn btn-outline-info">Zobacz swoje zamówienia</router-link>
+<p v-if="orderStatus.orderStatus==='Opłacone'">Możesz opuścić tą stronę</p>
+
+</div>
+<div v-else class="text-center"><br><h3>Sprawdź swoje zamówienia!</h3><router-link to="/orderList" class="btn btn-outline-info">Zobacz swoje zamówienia</router-link></div>
 </template>
 
 <script>
@@ -96,6 +102,7 @@ export default{
     
     data(){
         return {
+            buy: false,
             addresses: [],
             cart: [],
             addressForm: {
@@ -138,6 +145,9 @@ export default{
         })
         if(localStorage.getItem("items")){
         this.cart = JSON.parse(localStorage.getItem("items"));
+        if(this.cart.length>0){
+          this.buy= true;
+        }
       }
     },
     methods: {
@@ -213,9 +223,12 @@ export default{
             };
             await this.$http.patch("/payments/"+this.payment.id, bodyPayment).then(data => {
                 this.paymentStatus = data.data;
+                alert("Płatność się powiodła");
             })
+        },
+        endOrder(){
+            window.reload(true);
         }
-        
     }
 }
 </script>

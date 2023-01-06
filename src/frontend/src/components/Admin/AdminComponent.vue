@@ -170,7 +170,7 @@ export default {
     addProduct() {
       console.log(this.product);
 
-      this.$http.post("/products", this.product).then((data) => {
+      this.$http.post("/products", this.product).then(() => {
         this.writeProducts();
       }).catch((error) => {
         console.log(error);

@@ -36,3 +36,19 @@ nav{
     margin: 1vh auto; 
 
 }
+
+.navicon{
+    color: black;
+    margin: 0 1vh;
+    &:hover, &:focus, &:visited{
+        color: gray;
+        cursor: pointer;
+        text-decoration:none;
+    }
+}
+
+.main{
+    width: 100%;
+    margin: 0 !important;
+    padding: 2vh;
+}
