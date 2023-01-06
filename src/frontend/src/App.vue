@@ -29,9 +29,10 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Zamknij</button>
-        
-        <router-link v-if="logged" class="btn btn-outline-info" to="/placeOrder" >Złóż zamówienie</router-link>
-        <router-link v-else-if="!logged" class="btn btn-outline-info" to="/login" >Zaloguj się by złożyć zamówienie</router-link>
+        <div v-if="buy">
+          <router-link v-if="logged" class="btn btn-outline-info" to="/placeOrder" >Złóż zamówienie</router-link>
+          <router-link v-else-if="!logged" class="btn btn-outline-info" to="/login" >Zaloguj się by złożyć zamówienie</router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -47,18 +48,20 @@
   <div>
     
     <div v-if="logged">
-      <font-awesome-icon title="Wyloguj"  @Click="logout" icon="fa-solid fa-right-from-bracket"/>
-      <font-awesome-icon title="Koszyk" @click ="getCartItems" type="button" data-bs-toggle="modal" data-bs-target="#shoppingCartModal" icon="fa-solid fa-cart-shopping"/>
+      <font-awesome-icon class="navicon" title="Wyloguj"  @Click="logout" icon="fa-solid fa-right-from-bracket"/>
+      <router-link to="/orderList"><font-awesome-icon class="navicon" title="Moje zamówienia" icon="fa-solid fa-user" /></router-link>
+      <font-awesome-icon title="Koszyk" @click ="getCartItems" class="navicon" type="button" data-bs-toggle="modal" data-bs-target="#shoppingCartModal" icon="fa-solid fa-cart-shopping"/>
     </div>
     <div v-else-if="!logged">
-      <router-link to="/register"><font-awesome-icon title="Zarejestruj się" icon="fa-solid fa-user-plus" /></router-link>
-      <router-link to="/login"><font-awesome-icon title="Zaloguj" icon="fa-solid fa-right-to-bracket"/></router-link>
-      <font-awesome-icon title="Koszyk" @click ="getCartItems" type="button" data-bs-toggle="modal" data-bs-target="#shoppingCartModal" icon="fa-solid fa-cart-shopping"/>
+
+      <router-link to="/register"><font-awesome-icon  class="navicon" title="Zarejestruj się" icon="fa-solid fa-user-plus" /></router-link>
+      <router-link to="/login"><font-awesome-icon class="navicon" title="Zaloguj" icon="fa-solid fa-right-to-bracket"/></router-link>
+      <font-awesome-icon class="navicon" title="Koszyk" @click ="getCartItems" type="button" data-bs-toggle="modal" data-bs-target="#shoppingCartModal" icon="fa-solid fa-cart-shopping"/>
     </div>
   </div>
 </nav>
 
-  <router-view></router-view>
+  <div class="main"><router-view></router-view></div>
 </template>
 
 <script>
@@ -78,6 +81,7 @@ export default {
   data(){
     return{
       logged: null,
+      buy: false,
       cart: []
     }
   },
@@ -91,6 +95,9 @@ export default {
       
       if(localStorage.getItem("items")){
         this.cart = JSON.parse(localStorage.getItem("items"));
+        if(this.cart.length>0){
+          this.buy= true;
+        }
       }
       
     },

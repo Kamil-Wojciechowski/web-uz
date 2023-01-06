@@ -9,10 +9,9 @@
     <p class="card-text">Cena: {{product.priceUnit}}</p>
     <p class="card-text">Kategoria: {{product.productTag.name}}</p>
     <p class="card-text">Dostępne sztuki: {{ product.available }}</p>
-    <div class="btn-group" role="group">
-      <router-link class="btn btn-outline-info" :to="'/products/'+ product.id ">Obejrzyj</router-link>
-      <button @click="buy(product.id, product.available, product.name)" class="btn btn-outline-info">Kup</button>
-    </div>
+    <router-link class="btn btn-outline-info" :to="'/products/'+ product.id ">Obejrzyj</router-link>
+    <button v-if="product.available != 0" @click="buy(product.id, product.available, product.name)" class="btn btn-outline-info">Kup</button>
+    <p v-else >Produkt wyprzedany</p>
   </div>
   </div>
    

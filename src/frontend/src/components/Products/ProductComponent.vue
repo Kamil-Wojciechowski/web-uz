@@ -10,7 +10,8 @@
       <p class="card-text">Kategoria: {{product.productTag.name}}</p>
       <p class="card-text">Dostępne sztuki: {{ product.available }}</p>
       <a class= "text-info " :href="product.videoUrl">Zobacz film promocyjny</a><br><br>
-      <button @click="buy(product.id, product.available, product.name)" class="btn btn-outline-info">Kup</button>
+      <button v-if="product.available != 0" @click="buy(product.id, product.available, product.name)" class="btn btn-outline-info">Kup</button>
+      <p v-else >Produkt wyprzedany</p>
     </div>
     </div>
     
