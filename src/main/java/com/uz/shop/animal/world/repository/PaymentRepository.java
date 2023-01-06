@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
+
 /**
  * Repozytoria pozwalają nam na połączenie się do bazy, utworzenie encji oraz zarządzanie nimi
  */
@@ -15,7 +17,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             value = "SELECT * FROM payments WHERE order_id = ?1 ORDER BY id DESC LIMIT 1",
             nativeQuery = true
     )
-    Payment findLastPaymentByOrderId(long id_order);
+    Optional<Payment> findLastPaymentByOrderId(long id_order);
 
     //Zbieranie płatności po zamówieniu
     @Query(
@@ -29,5 +31,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
             value = "SELECT * FROM payments WHERE id = ?1",
             nativeQuery = true
     )
-    Payment findPaymentById(long id);
+    Optional<Payment> findPaymentById(long id);
 }

@@ -8,7 +8,7 @@ import com.uz.shop.animal.world.models.Payment;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.repository.AddressRepository;
 import com.uz.shop.animal.world.repository.OrderRepository;
-import com.uz.shop.animal.world.repository.PaymentRepository;
+import com.uz.shop.animal.world.request.OrderPatchRequest;
 import com.uz.shop.animal.world.request.OrderRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,8 +129,7 @@ public class OrderService {
     Wyszukiwane jest zamówienie a następnie usuwane.
      */
     public ResponseEntity.BodyBuilder deleteOrder(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(()->
-                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null));
+        Order order = orderRepository.findOrderById(id);
         ;
 
         orderRepository.delete(order);

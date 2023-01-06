@@ -1,5 +1,5 @@
 <template>
-    <div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="addressModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -41,6 +41,22 @@
   </div>
 </div>
 
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Opłać zamówienie</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Status Twojej płatności: {{ paymentStatus.status }}
+        <button v-if="paymentStatus.status==='Oczekiwanie'" @click="startPayment" class="btn btn-outline-info">Opłać zamówienie</button>
+        <button v-else data-bs-dismiss="modal" class="btn btn-outline-info">Zamknij</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <table class="table">
   <thead>
     <tr>
@@ -67,9 +83,9 @@ lub <button data-bs-toggle="modal" data-bs-target="#addressModal" class="btn btn
 Aktualnie wybrany adres: {{ currentAddress.lastname }}, {{ currentAddress.firstname }}, {{ currentAddress.compant }}, {{ currentAddress.nip }}, {{ currentAddress.mobileNumber }}, {{ currentAddress.street }}, {{ currentAddress.postalCode }}, {{ currentAddress.city }}
 
 <button v-if="currentAddress.id" @click="placeOrder" class="btn btn-outline-info">Złóż zamówienie</button><br>
-Status zamówienia: {{ orderStatus.orderStatus }}
-<button v-if="orderStatus.orderStatus==='Nowe'" @click="startPayment" class="btn btn-outline-info">Opłać zamówienie</button>
-<button v-if="orderStatus.orderStatus==='Opłacone'" @click="downloadLabel" class="btn btn-outline-info">Pobierz etykietę dostawy</button>
+Status zamówienia: {{ orderStatus.orderStatus }}. Nie odświeżaj tej strony! 
+<button v-if="orderStatus.orderStatus==='Nowe'" data-bs-toggle="modal" data-bs-target="#paymentModal" class="btn btn-outline-info">Opłać zamówienie</button>
+<router-link v-if="orderStatus.orderStatus==='Opłacone'" to="/orderList" class="btn btn-outline-info">Zobacz swoje zamówienia</router-link>
 </template>
 
 <script>
@@ -98,6 +114,11 @@ export default{
             orderStatus: {
                 orderStatus: "Oczekujące"
             },
+            orderUnitStatus: {},
+            payment: {},
+            paymentStatus: {
+                status: "Oczekiwanie"
+            }
         }
     },
     async created(){
@@ -147,18 +168,54 @@ export default{
                 this.currentAddress = data.data;
             })
         },
-        placeOrder(){
+        async placeOrder(){
             let prepareBody = {
                 status: "Nowe",
                 address: this.currentAddress.id
             };
-            this.$http.post("orders", prepareBody).then(data => {
+            await this.$http.post("/orders", prepareBody).then(data => {
                 this.orderStatus = data.data;
                 this.currentAddress = "";
+            });
+
+            this.cart.forEach((value) => {
+                let body = {
+                    productId: value.productId,
+                    amount: value.amount
+                }
+                
+                this.$http.post("/orders/"+this.orderStatus.id+"/units", body).then(data =>{
+                    this.orderUnitStatus = data.data; 
+                    this.cart = [];
+                    localStorage.removeItem("items");
+                })
             })
         },
-        startPayment(){},
-        downloadLabel(){}
+        async startPayment(){
+            let body = {
+                status: "Nowe",
+                callbackData: "Oczekujące",
+                orderId: this.orderStatus.id
+            };
+            await this.$http.post("/payments/", body).then(data => {
+                this.payment = data.data;
+            });
+            let prepareBody = {
+                status: "Opłacone"
+            };
+            await this.$http.patch("/orders/"+this.orderStatus.id, prepareBody).then(data => {
+                this.orderStatus = data.data;
+            });
+            let bodyPayment = {
+                status: "Opłacone",
+                callbackData: "Opłacone",
+                orderId: this.orderStatus.id
+            };
+            await this.$http.patch("/payments/"+this.payment.id, bodyPayment).then(data => {
+                this.paymentStatus = data.data;
+            })
+        }
+        
     }
 }
 </script>

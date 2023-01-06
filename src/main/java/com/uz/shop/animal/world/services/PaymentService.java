@@ -70,7 +70,9 @@ public class PaymentService {
             return new ResponseEntity<Payment>(new Payment(), HttpStatus.UNAUTHORIZED);
         }
 
-        return ResponseEntity.ok(paymentRepository.findLastPaymentByOrderId(idOrder));
+        return ResponseEntity.ok(paymentRepository.findLastPaymentByOrderId(idOrder).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        ));
     }
 
     /*
@@ -97,7 +99,9 @@ public class PaymentService {
     Płatnośc jest zapisywana.
      */
     public ResponseEntity<ObjectNode> updatePayment(Long id, PaymentRequest request) {
-        Payment payment = paymentRepository.findPaymentById(id);
+        Payment payment = paymentRepository.findPaymentById(id).orElseThrow(()->
+                new RestClientResponseException(ITEM_NOT_FOUND, 404, HttpStatus.NOT_FOUND.name(), null, null, null)
+        );;
         payment.setStatus(request.getStatus());
         payment.setCallback_data(request.getCallbackData());
 
