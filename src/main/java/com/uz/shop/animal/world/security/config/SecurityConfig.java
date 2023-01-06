@@ -114,6 +114,12 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET, "/api/v*/products/**")
                 .permitAll();
 
+        //Zezwolenie do ścieżki nt. dokumentacji (Swagger)
+        http
+                .authorizeRequests()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs/**")
+                .permitAll();
+
         //Cała reszta ścieżek ma być zabezpieczona pod autoryzacją
         http
                 .authorizeRequests().anyRequest().authenticated();
