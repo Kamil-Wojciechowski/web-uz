@@ -8,6 +8,7 @@ import com.uz.shop.animal.world.models.Payment;
 import com.uz.shop.animal.world.models.User;
 import com.uz.shop.animal.world.repository.AddressRepository;
 import com.uz.shop.animal.world.repository.OrderRepository;
+import com.uz.shop.animal.world.repository.PaymentRepository;
 import com.uz.shop.animal.world.request.OrderPatchRequest;
 import com.uz.shop.animal.world.request.OrderRequest;
 import lombok.AllArgsConstructor;
@@ -103,7 +104,7 @@ public class OrderService {
     Ustawiany jest status oraz zapisywany.
     Zwracana jest odpowiedź.
      */
-   public ResponseEntity<ObjectNode> updateOrder(Long id, OrderRequest request)
+   public ResponseEntity<ObjectNode> updateOrder(Long id, OrderPatchRequest request)
    {
        Order order = findOrderById(id);
 
@@ -129,8 +130,7 @@ public class OrderService {
     Wyszukiwane jest zamówienie a następnie usuwane.
      */
     public ResponseEntity.BodyBuilder deleteOrder(Long id) {
-        Order order = orderRepository.findOrderById(id);
-        ;
+        Order order = findOrderById(id);
 
         orderRepository.delete(order);
 
