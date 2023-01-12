@@ -72,7 +72,7 @@ public class RegistrationService {
                 request.getPassword()
                 ));
 
-        emailSender.send(request.getEmail(), token);
+        emailSender.send(request.getEmail(), token, true);
 
         return registerResponse();
     }
@@ -103,7 +103,7 @@ public class RegistrationService {
         if(expiredAt.isBefore(LocalDateTime.now())) {
             tokenService.deleteToken(tokenItem);
             String newToken = userService.createNewRegisterToken(tokenItem.getUser());
-            emailSender.send(tokenItem.getUser().getEmail(), newToken);
+            emailSender.send(tokenItem.getUser().getEmail(), newToken, true);
             return ErrorResponseCreator.buildBadRequest("Error", TOKEN_EXPIRED + " Nowy Token został wysłany.");
         }
 

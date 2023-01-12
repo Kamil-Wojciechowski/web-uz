@@ -25,17 +25,23 @@ public class EmailService implements EmailSender{
     // Wysyłamy
     @Override
     @Async
-    public void send(String email, String body) {
+    public void send(String email, String token, Boolean activation) {
         try {
             LOGGER.info("Sending");
+
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
 
-            helper.setText(body, true);
-            helper.setTo(email);
-            helper.setSubject("Confirm your email");
-            helper.setFrom("some@some.com");
+            if(activation) {
+                helper.setText(ActivationEmailClass.build("http://localhost:8081/register/" + token), true);
+                helper.setSubject("Potwierdź email");
+            } else {
+                helper.setText(RecoveryEmailClass.build("http://localhost:8081/recovery/token/" + token), true);
+                helper.setSubject("Zresetuj hasło");
+            }
 
+            helper.setTo(email);
+            helper.setFrom("some@some.com");
             mailSender.send(message);
 
         } catch (MessagingException e) {
@@ -43,4 +49,7 @@ public class EmailService implements EmailSender{
             throw new IllegalStateException("Failed to send email");
         }
     }
+
+
+
 }

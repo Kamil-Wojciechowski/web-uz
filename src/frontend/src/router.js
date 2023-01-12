@@ -8,6 +8,7 @@ import ProductComponent from "./components/Products/ProductComponent.vue";
 import OrderComponent from "./components/Products/OrderComponent.vue";
 import AdminComponent from "@/components/Admin/AdminComponent";
 import OrderListComponent from "./components/Products/OrderListComponent.vue";
+import RegisterTokenComponent from "@/components/Auth/RegisterTokenComponent";
 
 const routes = [
   {
@@ -34,6 +35,14 @@ const routes = [
     path: "/recovery/token/:token",
     name: "RecoveryToken",
     component: RecoveryTokenComponent,
+    params: {
+      token: ""
+    }
+  },
+  {
+    path: "/register/:token",
+    name: "RegisterToken",
+    component: RegisterTokenComponent,
     params: {
       token: ""
     }

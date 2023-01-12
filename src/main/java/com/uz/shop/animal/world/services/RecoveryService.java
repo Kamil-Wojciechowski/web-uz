@@ -3,6 +3,7 @@ package com.uz.shop.animal.world.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.Product;
+import com.uz.shop.animal.world.models.enums.TokenType;
 import com.uz.shop.animal.world.request.RecoveryRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
 import com.uz.shop.animal.world.models.User;
@@ -53,7 +54,7 @@ public class RecoveryService {
 
         String token = userService.recoveryUser(user);
 
-        emailSender.send(user.getEmail(), token);
+        emailSender.send(user.getEmail(), token, false);
 
         return recoveryResponse();
     }
@@ -86,7 +87,7 @@ public class RecoveryService {
             return ErrorResponseCreator.buildBadRequest("Error", TOKEN_EXPIRED);
         }
 
-        if(!passwordValidator.test(recoveryRequest.getConfirmedPassword(), recoveryRequest.getConfirmedPassword())) {
+        if(!passwordValidator.test(recoveryRequest.getPassword(), recoveryRequest.getConfirmedPassword())) {
             return ErrorResponseCreator.buildBadRequest("Error", PASSWORD_ARE_NOT_THE_SAME);
         }
 
@@ -94,6 +95,8 @@ public class RecoveryService {
         String encodedPassword = bCryptPasswordEncoder.encode(recoveryRequest.getPassword());
 
         userService.changePassword(encodedPassword, user.getId());
+        tokenService.deleteToken(tokenItem);
+
         return confirmResponse();
     }
 
@@ -116,6 +119,10 @@ public class RecoveryService {
         if(expiredAt.isBefore(LocalDateTime.now())) {
             tokenService.deleteToken(tokenItem);
             throw new RestClientResponseException(TOKEN_EXPIRED, 400, HttpStatus.BAD_REQUEST.name(), null, null, null);
+        }
+
+        if(tokenItem.getTokenType() != TokenType.RECOVERY) {
+            throw new RestClientResponseException(TOKEN_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null);
         }
     }
 }

@@ -82,7 +82,13 @@ export default {
 
           location.reload(true);
         }).catch(error => {
-          this.form.error = error.response.data.errors[0];
+          console.log(error);
+          if(error.response.data.error === undefined) {
+            this.form.error = error.response.data.errors[0];
+          } else {
+            this.form.error = error.response.data.error;
+          }
+
           this.form.message = "";
         });
     },
