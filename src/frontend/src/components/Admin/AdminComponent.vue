@@ -266,7 +266,6 @@ export default {
       })
     },
     productFormHandler() {
-      console.log(this.product.id);
       if(this.product.id === undefined) {
         this.$http.post("/products", this.product).then(() => {
           this.errors = [];
@@ -342,7 +341,7 @@ export default {
           console.log(data.data);
         }).catch((error) => console.log(error))
       } else {
-        this.$http.delete("/products/" + id).then(() => {
+        this.$http.delete("/products/tags/" + id).then(() => {
           this.writeTags();
         });
       }
