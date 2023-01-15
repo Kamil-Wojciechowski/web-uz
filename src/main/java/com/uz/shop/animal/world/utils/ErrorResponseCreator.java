@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+//Serwis odpowiadający za budowanie 400 oraz 404 jako response entity, a nie jako errory throwable
 @Service
 public class ErrorResponseCreator {
 

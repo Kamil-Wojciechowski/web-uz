@@ -90,7 +90,7 @@ export default {
         .catch(error => {
           console.log(error);
           this.form.error = error.response.data.message;
-          this.form.message = "";
+          this.form.message = error.response.data.errors[0];
         });
     },
     onCaptchaVerified: function (recaptchaToken) {

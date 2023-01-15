@@ -10,7 +10,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
-
+/**
+ * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
+ */
 @Data
 @Valid
 @Getter

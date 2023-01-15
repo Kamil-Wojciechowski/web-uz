@@ -15,20 +15,29 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//Serwis odpowiadający za walidacje maila
 @Service
 public class EmailValidator implements Predicate<String> {
+
+    //Patern odnośnie maila
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    //Usługa API, która sprawdza czy email należy do domen od 10 minutowych maili
     private static final String url = "https://disposable.debounce.io/";
+
+    //Logger
     private final static Logger LOGGER = LoggerFactory.getLogger(EmailValidator.class);
 
 
+    //Test który sprawdza mail oraz czy jego pochodzenie jest poprawne
     @Override
     public boolean test(String email) {
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(email);
         return matcher.find() & !checkDisposableEmail(email);
     }
 
+    //Metoda wysyłająca zapytanie oraz sprawdzająca, czy email powinien zostać użyty
     private boolean checkDisposableEmail(String email){
 
         try {

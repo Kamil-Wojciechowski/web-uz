@@ -1,4 +1,5 @@
 server:
+  contextPath: /
   jwt:
     secret: "secret"
     issuer: "AnimalWorld"
@@ -16,7 +17,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://localhost:3306/web_uz
+    url: jdbc:mysql://localhost:3306/web_uz?jdbcCompliantTruncation=false
   jpa:
     hibernate:
       ddl-auto: update
@@ -41,3 +42,15 @@ spring:
           connectiontimeout: 5000
           timeout: 3000
           writetimeout: 5000
+
+springdoc:
+  version: '@springdoc.version@'
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tagsSorter: alpha
+    use-root-path: true
+  cache:
+    disabled: true

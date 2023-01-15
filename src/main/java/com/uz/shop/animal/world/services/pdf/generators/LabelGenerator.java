@@ -4,20 +4,15 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.Barcode128;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.uz.shop.animal.world.services.pdf.fake_objects.Customer;
+import com.uz.shop.animal.world.models.Address;
+import lombok.AllArgsConstructor;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
 
+@AllArgsConstructor
 public class LabelGenerator extends BaseGenerator {
-    private int idOrder;
-    private Customer customer;
-
-    // TODO: Zebrać dane na podstawie idOrder
-    public LabelGenerator(int idOrder) {
-        this.idOrder = idOrder;
-        this.customer = new Customer("X", "Y", "Ulica 1A", "00-000 Miasto", "Polska");
-    }
+    private Address address;
 
     @Override
     protected Rectangle getPageSize() {
@@ -61,7 +56,7 @@ public class LabelGenerator extends BaseGenerator {
 
         table.addCell(this.creator.getCompanyData("Nadawca"));
         table.addCell(this.creator.getBlankCell());
-        table.addCell(this.creator.getCustomerData("Odbiorca", this.customer));
+        table.addCell(this.creator.getCustomerData("Odbiorca", this.address));
 
         return table;
     }

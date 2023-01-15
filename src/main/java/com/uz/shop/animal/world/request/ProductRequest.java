@@ -10,6 +10,10 @@ import javax.validation.constraints.AssertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -57,6 +61,7 @@ public class ProductRequest {
         return map;
     }
 
+    //Sprawdza czy test wyszedł prawdziwy przed jego utworzeniem
     @AssertTrue
     public boolean isValidProductTag() {
         if(this.productTag == null) {

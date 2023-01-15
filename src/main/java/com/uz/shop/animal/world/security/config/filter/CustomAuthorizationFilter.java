@@ -35,6 +35,9 @@ import java.util.Map;
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+/*
+Filtr odpowiadający za autoryzacje, jest on wykonywany raz na zapytanie
+ */
 @Component
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
@@ -44,6 +47,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    // Owe ścieżki nie powinny być sprawdzane przed zapytaniem
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return new AntPathMatcher().match("/api/v*/login", request.getServletPath()) ||
@@ -53,6 +57,9 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 new AntPathMatcher().match("/api/v*/recovery/**", request.getServletPath());
     }
 
+
+    //Sprawdza czy istnieje token w headerze Authentication, Wypisuje odpowiednią informację, a następnie sprawdza użytkownika
+    // lub przechodzi dalej do filtrowania
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
        final String requestTokenHeader = request.getHeader("Authorization");
@@ -62,12 +69,14 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
        if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
            jwtToken = requestTokenHeader.substring(7);
-           try {
-               username = jwtUtil.getUsernameFromToken(jwtToken);
-           } catch (IllegalArgumentException e) {
-               System.out.println("Unable to get JWT Token");
-           } catch (ExpiredJwtException e) {
-               System.out.println("JWT Token has expired");
+           if(!jwtToken.equals("null")) {
+               try {
+                   username = jwtUtil.getUsernameFromToken(jwtToken);
+               } catch (IllegalArgumentException e) {
+                   System.out.println("Unable to get JWT Token");
+               } catch (ExpiredJwtException e) {
+                   System.out.println("JWT Token has expired");
+               }
            }
        } else {
            logger.warn("JWT Token does not begin with Bearer String");

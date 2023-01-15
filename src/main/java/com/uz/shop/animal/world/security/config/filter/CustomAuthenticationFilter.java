@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Map;
 
 
+//Filter odpowiadający za autoryzacje na ścieżce /login
 @Slf4j
 @AllArgsConstructor
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -31,6 +32,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     private final UserService userService;
     private final AuthorizationService authorizationService;
 
+    //Sprawdza czy autoryzacja przebiegła pomyślnie
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("email");
@@ -39,6 +41,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         return authenticationManager.authenticate(authenticationToken);
     }
 
+    //Jeśli autoryzacja powyżej przebiegła pomyślnie, tworzy tokeny oraz zwraca je
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

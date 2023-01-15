@@ -1,14 +1,12 @@
 package com.uz.shop.animal.world.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.uz.shop.animal.world.models.Token;
 import com.uz.shop.animal.world.models.User;
-import com.uz.shop.animal.world.models.UserType;
+import com.uz.shop.animal.world.models.enums.UserType;
 import com.uz.shop.animal.world.request.RegistrationRequest;
 import com.uz.shop.animal.world.services.email.EmailSender;
-import com.uz.shop.animal.world.utils.Dictionary;
 import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import com.uz.shop.animal.world.validators.EmailValidator;
 import com.uz.shop.animal.world.validators.PasswordValidator;
@@ -19,13 +17,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.time.LocalDateTime;
 
 import static com.uz.shop.animal.world.utils.Dictionary.*;
 
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 @Service
 @AllArgsConstructor
 public class RegistrationService {
@@ -44,6 +42,12 @@ public class RegistrationService {
 
     private final ObjectNode objectNode = new ObjectMapper().createObjectNode();
 
+    /*
+    Rejestracja
+    Sprawdzany jest email, captcha token, hasło.
+    Następnie odnosimy się do serwisu usera, gdzie rejestrujemy użytkownika.
+    Na końcu wysyłamy mail oraz zwracamy response przygotowany w metodzie registerResponse.
+     */
     public ResponseEntity<ObjectNode> register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
         boolean isRecaptchaVerified = recaptchaValidator.test(request.getRecaptchaToken());
@@ -68,11 +72,14 @@ public class RegistrationService {
                 request.getPassword()
                 ));
 
-        emailSender.send(request.getEmail(), token);
+        emailSender.send(request.getEmail(), token, true);
 
         return registerResponse();
     }
 
+    /*
+    Przygotowanie odpowiedzi od backendu w przypadku rejestacji
+     */
     private ResponseEntity<ObjectNode> registerResponse() {
         objectNode.put("message", EMAIL_SEND_CONFIRM);
         objectNode.put("data", new ObjectMapper().createObjectNode());
@@ -80,6 +87,12 @@ public class RegistrationService {
         return ResponseEntity.status(HttpStatus.CREATED).body(objectNode);
     }
 
+    /*
+    Pobieramy token po tokenie.
+    Token zostaje walidowany czy nie wygasł, jeśli tak tworzony zostaje nowy oraz wysłany.
+    W innym przypadku usuwany jest token oraz użytkownik zostaje aktywowany.
+    Przygotowany response zostaje zwrócony z serwera.
+     */
     @Transactional
     public ResponseEntity<ObjectNode> confirmToken(String token) {
         Token tokenItem = tokenService.getToken(token)
@@ -89,8 +102,9 @@ public class RegistrationService {
 
         if(expiredAt.isBefore(LocalDateTime.now())) {
             tokenService.deleteToken(tokenItem);
-            userService.createNewRegisterToken(tokenItem.getUser());
-            return ErrorResponseCreator.buildBadRequest("Error", TOKEN_EXPIRED);
+            String newToken = userService.createNewRegisterToken(tokenItem.getUser());
+            emailSender.send(tokenItem.getUser().getEmail(), newToken, true);
+            return ErrorResponseCreator.buildBadRequest("Error", TOKEN_EXPIRED + " Nowy Token został wysłany.");
         }
 
         tokenService.deleteToken(tokenItem);
@@ -99,6 +113,7 @@ public class RegistrationService {
         return confirmResponse();
     }
 
+    // Response jest przygotowany dla potwierdzenia tokenu
     private ResponseEntity<ObjectNode> confirmResponse() {
         objectNode.put("message", "Email has been confirmed!");
         objectNode.put("data", new ObjectMapper().createObjectNode());

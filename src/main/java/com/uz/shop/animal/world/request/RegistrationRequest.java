@@ -11,11 +11,17 @@ import javax.validation.constraints.*;
 import static com.uz.shop.animal.world.utils.Dictionary.INVALID_INPUT;
 import static com.uz.shop.animal.world.utils.Dictionary.WRONG_FORMAT_EMAIL;
 
+/**
+ * Requesty odpowiadają za zapytania, którę są wysyłane w stronę backendu
+ * Lombok pomaga nam utworzyć automatycznie gettery, settery, bezargumentowy konstruktor oraz konstruktor z wszystkimi elementami
+ */
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class RegistrationRequest {
+
+    //Element nie może być nullem oraz rozmiar musi mieć minimalnie 2
     @NotNull
     @Size(min=2, message = INVALID_INPUT)
     @JsonProperty("firstname")

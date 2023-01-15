@@ -37,6 +37,14 @@ export default {
             }
         };
     },
+    created() {
+      this.$http.get("/recovery/token/" + this.$route.params.token).catch(() => {
+        alert("Token wygasł!");
+        return this.$router.replace({
+          name: "Home"
+        });
+      })
+    },
     methods: {
         onSubmit() {
             this.recovery();
@@ -50,16 +58,16 @@ export default {
             console.log(prepareBody);
             this.axios.post("/recovery/token/" + this.$route.params.token, prepareBody)
                 .then(data => {
-                    console.log(data);
-                    console.log(this.$route.params.token);
                     this.form.message = data.data.message;
                     this.form.error = "";
+
+                    return this.$router.replace({
+                      name: "Home"
+                    });
                 })
                 .catch(error => {
-                    console.log(this.$route.params.token);
-                    console.log(error);
                     this.form.error = error.response.data.message;
-                    this.form.message = "";
+                    this.form.message = error.response.data.errors[0];
                 });
         }
     }

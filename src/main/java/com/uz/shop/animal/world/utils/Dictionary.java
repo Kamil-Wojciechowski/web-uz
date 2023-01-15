@@ -1,5 +1,6 @@
 package com.uz.shop.animal.world.utils;
 
+//Polski słownik, który jest wykorzystywany w aplikacji
 public class Dictionary {
     public static final String RECOVERY_EMAIL = "Sprawdź swoją skrzynkę mailową.";
     public static final String TOKEN_NOT_FOUND = "Nie znaleziono tokenu.";
@@ -17,6 +18,11 @@ public class Dictionary {
     public final static String TAG_NOT_FOUND = "Tag : Taki tag nie istnieje";
     public final static String ITEM_NOT_FOUND = "Nie znaleziono elementu o podanym Id";
 
+    public final static String ITEM_COUNT_NOT_ENOUGH = "Nie można zakupić produktu, ponieważ jest go za mało";
+    public final static String ITEM_NOT_AVALIABLE = "Produkt nie jest dostępny";
+
+    public final static String UNAUTHORIZED = "Brak dostępu";
+
     class Inputs {
         public final static String FIRSTNAME = "Imię";
         public final static String LASTNAME = "Nazwisko";
@@ -27,6 +33,10 @@ public class Dictionary {
         public final static String DESCRIPTION = "Opis";
         public final static String PRICEUNIT = "Cena jednostki";
         public final static String IMAGEBASE = "Obraz";
+        public final static String CITY = "Miejscowość";
+        public final static String MOBILENUMBER = "Numer telefonu";
+        public final static String STREET = "Ulica";
+        public final static String POSTALCODE = "Kod pocztowy";
 
     }
 
@@ -34,7 +44,6 @@ public class Dictionary {
         public static final String NAME = "Świat zwierząt";
         public static final String STREET = "Ulica 0A";
         public static final String CITY = "00-000 Miasto";
-        public static final String COUNTRY = "Polska";
     }
 
     public static class Document {

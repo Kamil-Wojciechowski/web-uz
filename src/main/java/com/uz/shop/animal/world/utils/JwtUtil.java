@@ -17,14 +17,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
+//Komponent odpowiadający za Tworzenie, zbieranie informacji z tokenów, które zostają wysyłane przez Authorization header
 @Component
 public class JwtUtil implements Serializable {
 
     private static final long serialVersionUID = -2550185165626007488L;
 
+    //Długość życia tokenu
     public static final long JWT_TOKEN_VALIDITY = 5*60*60;
+
+    //Długość życia refresh tokena
     public static final long JWT_TOKEN_REFRESH_VALIDITY = 360*60*60;
 
+    //Sekret do zabezpieczania tokenów
     @Value("${server.jwt.secret}")
     private String secret;
 

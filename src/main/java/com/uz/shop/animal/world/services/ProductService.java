@@ -10,6 +10,8 @@ import com.uz.shop.animal.world.request.ProductPostRequest;
 import com.uz.shop.animal.world.request.ProductRequest;
 import com.uz.shop.animal.world.utils.ErrorResponseCreator;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static com.uz.shop.animal.world.utils.Dictionary.*;
+
+//Serwis odpowiadający za wszystkie biznesowe procesy dla danej klasy
 
 @Service
 @EnableAutoConfiguration
@@ -37,16 +43,48 @@ public class ProductService {
     @Autowired
     private ProductTagRepository productTagRepository;
 
-    public ResponseEntity<List<Product>> findAll() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-            return ResponseEntity.ok(productRepository.findAll());
-        }
+    //Enkoduje byte to String w base64 dla frontendu oraz zapisuje pod wartoscia imageBase
+    private void setProductImageBase(Product product)
+    {
+        StringBuilder sb = new StringBuilder();
 
-        return ResponseEntity.ok(new ArrayList<>(productRepository.findAllVisible()));
+        sb.append("data:image/png;base64,");
+        sb.append(StringUtils.newStringUtf8(Base64.getEncoder().encode(product.getImage())));
+
+        product.setImageBase(sb.toString());
     }
 
+    //Przelicza dostępną ilość
+    private void setProductAvailable(Product product)
+    {
+        product.setAvailable(product.getAmount() - product.getAmountBought());
+    }
+
+    /*
+    Pobieranie produktów.
+    Jeśli użytkownik zalogowany jest admin pobierane są wszystkie elementy.
+    W innym przypadku zwracane są tylko elementy ustawione jako widoczne.
+     */
+    public ResponseEntity<List<Product>> findAll() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<Product> products;
+
+        if(auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            products = productRepository.findAll();
+        } else {
+            products = new ArrayList<>(productRepository.findAllVisible());
+        }
+
+        for(Product product : products) {
+            setProductImageBase(product);
+            setProductAvailable(product);
+        }
+
+        return ResponseEntity.ok(products);
+    }
+
+    // Odpowiedzi Created oraz Update
     private ResponseEntity<ObjectNode> respones(Product product, Boolean isCreate) {
         ObjectNode tree = mapper.valueToTree(product);
         if(isCreate) {
@@ -56,6 +94,11 @@ public class ProductService {
         }
     }
 
+    /*
+    Tworzenie produktu
+    Produkt jest walidowany, jeśli chodzi o nazwę oraz produkt tag.
+    Zapisywany jest w bazie, a następnie zwracana jest odpowiedź z serwera.
+     */
     public ResponseEntity<ObjectNode> create(ProductPostRequest request) {
         if(productRepository.findByName(request.getName()).isPresent()) {
             return ErrorResponseCreator.buildBadRequest("Error", ALREADY_EXISTS);
@@ -70,14 +113,16 @@ public class ProductService {
                     new RestClientResponseException(ITEM_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null)
                 );
 
+        byte[] decodedImage = Base64.getMimeDecoder().decode(request.getImageBase());
 
         Product savedProduct = productRepository.save(new Product(
                 productTag,
                 request.getName(),
                 request.getDescription(),
                 request.getAmount(),
+                0,
                 request.getPriceUnit(),
-                request.getImageBase(),
+                decodedImage,
                 request.getVideoUrl(),
                 request.getIsVisible()
         ));
@@ -85,58 +130,58 @@ public class ProductService {
         return respones(savedProduct, true);
     }
 
-    private Product getProductById(Long id) {
+    //Pobieranie produktu po ID
+    private Product getProduct(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() ->
                         new RestClientResponseException(ITEM_NOT_FOUND, 400, HttpStatus.BAD_REQUEST.name(), null, null, null)
                 );
     }
 
+    /*
+    Metoda odpowiadająca za aktualizacje produktu.
+    Wartości są walidowane, a następnie wstawiane do produktu
+     */
     private void setProduct(ProductRequest request, Product product) {
-        Map<String, Object> map = request.getHashMap();
+        product.setName(request.getName());
 
-        map.forEach((key, value) -> {
-            if(value != null) {
-                switch (key) {
-                    case "name":
-                        product.setName(value.toString());
-                        break;
-                    case "productTag":
-                        ProductTag productTag = productTagRepository.findById((Integer) value)
-                                .orElseThrow(() ->
-                                        new RestClientResponseException(TAG_NOT_FOUND, 400, HttpStatus.NOT_FOUND.name(), null, null, null)
-                                );
+        product.setDescription(request.getDescription());
 
-                        product.setProductTag(productTag);
-                        break;
-                    case "description":
-                        product.setDescription(value.toString());
-                        break;
-                    case "amount":
-                        product.setAmount((Integer) value);
-                        break;
-                    case "priceUnity":
-                        product.setPriceUnit((Double) value);
-                        break;
-                    case "imageBase":
-                        product.setImageBase(value.toString());
-                        break;
-                    case "videoUrl":
-                        product.setVideoUrl(value.toString());
-                        break;
-                    case "isVisible":
-                        if(product.getIsVisible() != Boolean.valueOf(value.toString())) {
-                            product.setIsVisible(Boolean.valueOf(value.toString()));
-                        }
-                        break;
+        product.setAmount(request.getAmount());
 
-                }
-            }
-        });
+        product.setPriceUnit(request.getPriceUnit());
+
+        try {
+            byte[] decodedImage = Base64.getMimeDecoder().decode(request.getImageBase());
+            product.setImage(decodedImage);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+
+
+        product.setVideoUrl(request.getVideoUrl());
+
+        product.setIsVisible(request.getIsVisible());
     }
 
+    //Pobieranie produktu po ID
+    public ResponseEntity<ObjectNode> getProductById(Long productId) {
+        Product product = getProduct(productId);
+
+        setProductImageBase(product);
+        setProductAvailable(product);
+
+        return respones(product, false);
+    }
+
+    /* Aktualizacja produktu
+    Używana jest tutaj metoda wcześniej opisana do ustawiania produktu.
+    Produkt jest pobierany, następnie aktualizowany i zapisywany.
+    Odpowiedź z serwera zostaje przygotowana i zwracana.
+     */
     public ResponseEntity<ObjectNode> update(Long productId, ProductRequest request) {
-        Product product = getProductById(productId);
+        Product product = getProduct(productId);
 
         setProduct(request, product);
 
@@ -145,11 +190,10 @@ public class ProductService {
         return respones(savedProduct, false);
     }
 
-    public ResponseEntity.BodyBuilder delete(Long id) {
-        Product product = getProductById(id);
+    //Usuwanie produkut, pobiera produkt po ID a następnie go usuwa
+    public void delete(Long id) {
+        Product product = getProduct(id);
 
         productRepository.delete(product);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT);
     }
 }
